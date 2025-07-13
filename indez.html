@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot de Talento Humano</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo para la barra de desplazamiento */
+        #chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 6px;
+        }
+        #chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .chat-option-button {
+            transition: all 0.2s ease-in-out;
+        }
+        .chat-option-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md mx-auto bg-white rounded-2xl shadow-2xl flex flex-col h-[90vh] max-h-[800px]">
+        <!-- Cabecera del Chat -->
+        <header class="bg-blue-600 text-white p-4 rounded-t-2xl flex items-center shadow-lg">
+            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold">Asistente de Talento Humano</h1>
+                <p class="text-sm opacity-80">En línea</p>
+            </div>
+        </header>
+
+        <!-- Contenedor de Mensajes -->
+        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4">
+            <!-- Los mensajes del chat se insertarán aquí -->
+        </div>
+
+        <!-- Contenedor de Opciones -->
+        <div id="chat-options" class="p-4 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
+             <!-- Las opciones del chat se insertarán aquí -->
+        </div>
+    </div>
+
+    <script>
+        // --- Estructura de datos del Chatbot ---
+        const chatTree = {
+            // NODO RAÍZ (INICIO)
+            'root': {
+                message: '¡Hola! Soy tu asistente virtual de Talento Humano. ¿En qué área te puedo ayudar?',
+                options: [
+                    { text: 'Selección', nextNode: 'seleccion' },
+                    { text: 'Trabajo Social', nextNode: 'trabajoSocial' },
+                ],
+                isQuestion: true
+            },
+
+            // --- ÁREA: SELECCIÓN ---
+            'seleccion': {
+                message: 'Entendido. Has elegido el área de <strong>Selección</strong>. ¿Sobre qué grupo de temas necesitas información?',
+                options: [
+                    { text: 'Postulación', nextNode: 'postulacion' },
+                    { text: 'Personal', nextNode: 'personal' },
+                    { text: '‹ Regresar al menú anterior', nextNode: 'root' },
+                ],
+                isQuestion: true
+            },
+            'postulacion': {
+                message: 'Has elegido <strong>Postulación</strong>. ¿Cuál es tu pregunta?',
+                options: [
+                    { text: '¿Cómo puedo referir a alguien?', nextNode: 'respuestaReferir' },
+                    { text: '¿Dónde puedo postular?', nextNode: 'respuestaPostular' },
+                    { text: '‹ Regresar al menú anterior', nextNode: 'seleccion' },
+                ],
+                isQuestion: true
+            },
+            'personal': {
+                message: 'Has elegido <strong>Personal</strong>. ¿Cuál es tu pregunta?',
+                options: [
+                    { text: '¿Cómo valido horas de pasantía?', nextNode: 'respuestaPasantia' },
+                    { text: '¿Cómo actualizo mi información?', nextNode: 'respuestaActualizarInfo' },
+                    { text: '‹ Regresar al menú anterior', nextNode: 'seleccion' },
+                ],
+                isQuestion: true
+            },
+            'respuestaReferir': {
+                message: 'Para referir a alguien, debes seguir el proceso establecido en el portal del empleado o comunicarte directamente con el área de Selección para obtener el formulario correspondiente.',
+                options: [{ text: '‹ Regresar a Postulación', nextNode: 'postulacion' }],
+                isQuestion: false
+            },
+            'respuestaPostular': {
+                message: 'Puedes encontrar todas nuestras vacantes abiertas y postular a través de nuestro portal de empleos oficial o en las plataformas de reclutamiento asociadas.',
+                options: [{ text: '‹ Regresar a Postulación', nextNode: 'postulacion' }],
+                isQuestion: false
+            },
+            'respuestaPasantia': {
+                message: 'Para validar horas de pasantía con tu experiencia laboral, necesitas presentar un certificado de tus pasantías junto con una solicitud formal al departamento de Talento Humano para su revisión y aprobación.',
+                options: [{ text: '‹ Regresar a Personal', nextNode: 'personal' }],
+                isQuestion: false
+            },
+            'respuestaActualizarInfo': {
+                message: 'Puedes actualizar tu información personal (dirección, estado civil, etc.) directamente en el portal del empleado o solicitando el formulario de actualización de datos a Talento Humano.',
+                options: [{ text: '‹ Regresar a Personal', nextNode: 'personal' }],
+                isQuestion: false
+            },
+
+            // --- ÁREA: TRABAJO SOCIAL ---
+            'trabajoSocial': {
+                message: 'Entendido. Has elegido el área de <strong>Trabajo Social</strong>. ¿Sobre qué grupo de temas necesitas información?',
+                options: [
+                    { text: 'Uniformes', nextNode: 'uniformes' },
+                    { text: 'Charlas', nextNode: 'charlas' },
+                    { text: 'Denuncias', nextNode: 'denuncias' },
+                    { text: 'Permisos Médicos', nextNode: 'permisosMedicos' },
+                    { text: 'Subsidios', nextNode: 'subsidios' },
+                    { text: 'Licencias', nextNode: 'licencias' },
+                    { text: 'Préstamos', nextNode: 'prestamos' },
+                    { text: '‹ Regresar al menú anterior', nextNode: 'root' },
+                ],
+                isQuestion: true
+            },
+            
+            // Grupo: Uniformes
+            'uniformes': {
+                message: 'Has elegido <strong>Uniformes</strong>. ¿Cuál es tu consulta?',
+                options: [
+                    { text: '¿Cuántas dotaciones se reciben al año?', nextNode: 'respDotaciones' },
+                    { text: '¿Cómo reporto un daño en mi uniforme?', nextNode: 'respReportarDano' },
+                    { text: '¿Qué hago si mi uniforme no es mi talla?', nextNode: 'respTallaIncorrecta' },
+                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                ],
+                isQuestion: true
+            },
+            'respDotaciones': { message: 'Se reciben <strong>dos dotaciones</strong> de uniforme al año.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'uniformes' }], isQuestion: false },
+            'respReportarDano': { message: 'Debes reportar el daño a tu jefe directo. Si es por robo, es indispensable presentar la denuncia correspondiente.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'uniformes' }], isQuestion: false },
+            'respTallaIncorrecta': { message: 'Debes contactarte con el <strong>Trabajador Social</strong> de tu zona para gestionar el cambio.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'uniformes' }], isQuestion: false },
+
+            // Grupo: Charlas
+            'charlas': {
+                message: 'Has elegido <strong>Charlas</strong>. ¿Cuál es tu consulta?',
+                options: [
+                    { text: '¿Cómo puedo participar en las charlas?', nextNode: 'respParticiparCharlas' },
+                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                ],
+                isQuestion: true
+            },
+            'respParticiparCharlas': { message: 'Tenemos un calendario anual de charlas. Puedes consultar las fechas y temas con tu jefe inmediato o con el trabajador social de tu zona.', options: [{ text: '‹ Regresar a Charlas', nextNode: 'charlas' }], isQuestion: false },
+
+            // Grupo: Denuncias
+            'denuncias': {
+                message: 'Has elegido <strong>Denuncias</strong>. ¿Cuál es tu consulta?',
+                options: [
+                    { text: '¿Cómo puedo realizar una denuncia?', nextNode: 'respRealizarDenuncia' },
+                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                ],
+                isQuestion: true
+            },
+            'respRealizarDenuncia': { message: 'Puedes realizar una denuncia de forma confidencial a través de los siguientes canales:<br><strong>Web:</strong> <a href="https://www.lineaeticagrupoprimax.com/" target="_blank" class="text-blue-500 hover:underline">lineaeticagrupoprimax.com</a><br><strong>Email:</strong> reportes@lineaeticagrupoprimax.com<br><strong>WhatsApp:</strong> (+51) 989043514', options: [{ text: '‹ Regresar a Denuncias', nextNode: 'denuncias' }], isQuestion: false },
+
+            // Grupo: Permisos Médicos
+            'permisosMedicos': {
+                message: 'Has elegido <strong>Permisos Médicos</strong>. ¿Cuál es tu consulta?',
+                options: [
+                    { text: '¿Plazo para entregar permiso médico?', nextNode: 'respPlazoPermiso' },
+                    { text: '¿Qué pasa si no tengo derecho al IESS?', nextNode: 'respSinIESS' },
+                    { text: '¿Cómo revalidar descansos médicos?', nextNode: 'respRevalidarDescanso' },
+                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                ],
+                isQuestion: true
+            },
+            'respPlazoPermiso': { message: 'Tienes un plazo de <strong>3 días</strong> para poder presentar un certificado médico y justificar tu ausencia.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'permisosMedicos' }], isQuestion: false },
+            'respSinIESS': { message: 'Si no tienes derecho al IESS, puedes acercarte a centros médicos particulares, Hospitales del Ministerio de Salud Pública o el Dispensario Médico de Atimasa.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'permisosMedicos' }], isQuestion: false },
+            'respRevalidarDescanso': { message: 'Puede ser de manera <strong>online</strong> si el certificado tiene firma digital, o de manera <strong>presencial</strong> en un Hospital del IESS si tiene firma manual.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'permisosMedicos' }], isQuestion: false },
+
+            // Grupo: Subsidios
+            'subsidios': {
+                message: 'Has elegido <strong>Subsidios</strong>. ¿Cuál es tu consulta?',
+                options: [
+                    { text: '¿Cómo se calcula el subsidio?', nextNode: 'respCalculoSubsidio' },
+                    { text: '¿Tiempo máximo de subsidio?', nextNode: 'respMaxSubsidio' },
+                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                ],
+                isQuestion: true
+            },
+            'respCalculoSubsidio': { message: 'El subsidio por descanso médico se calcula así:<br>- Los 3 primeros días no son remunerados.<br>- Desde el día 4 hasta el día 21, la empresa paga el 50% del sueldo.<br>- A partir del día 22, el IESS paga el 75% y la empresa el 25%.', options: [{ text: '‹ Regresar a Subsidios', nextNode: 'subsidios' }], isQuestion: false },
+            'respMaxSubsidio': { message: 'El tiempo máximo de subsidio por descanso médico es de <strong>hasta 6 meses</strong>.', options: [{ text: '‹ Regresar a Subsidios', nextNode: 'subsidios' }], isQuestion: false },
+
+            // Grupo: Licencias
+            'licencias': {
+                message: 'Has elegido <strong>Licencias</strong>. ¿Qué tipo de licencia te interesa?',
+                options: [
+                    { text: 'Maternidad', nextNode: 'licMaternidad' },
+                    { text: 'Paternidad', nextNode: 'licPaternidad' },
+                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                ],
+                isQuestion: true
+            },
+            'licMaternidad': {
+                message: 'Consultas sobre <strong>Licencia de Maternidad</strong>:',
+                options: [
+                    { text: '¿Cuántos días se otorgan?', nextNode: 'respDiasMaternidad' },
+                    { text: '¿Documentos y plazos?', nextNode: 'respDocsMaternidad' },
+                    { text: '¿Cómo se calcula el sueldo?', nextNode: 'respSueldoMaternidad' },
+                    { text: '‹ Regresar a Licencias', nextNode: 'licencias' },
+                ],
+                isQuestion: true
+            },
+            'respDiasMaternidad': { message: 'Se otorgan <strong>84 días consecutivos</strong> contados desde el nacimiento del bebé. En caso de partos múltiples, se añaden 10 días adicionales.', options: [{ text: '‹ Regresar a Licencia de Maternidad', nextNode: 'licMaternidad' }], isQuestion: false },
+            'respDocsMaternidad': { message: 'Debes presentar el descanso médico por los 84 días (tienes 3 días para justificarlo desde el inicio de tu licencia) y posteriormente, el certificado de nacimiento del bebé.', options: [{ text: '‹ Regresar a Licencia de Maternidad', nextNode: 'licMaternidad' }], isQuestion: false },
+            'respSueldoMaternidad': { message: 'Recibes el 25% por parte de la empresa y el 75% por parte del IESS. Si no tienes derecho al IESS, la empresa cubre el 100%.', options: [{ text: '‹ Regresar a Licencia de Maternidad', nextNode: 'licMaternidad' }], isQuestion: false },
+            'licPaternidad': {
+                message: 'Consultas sobre <strong>Licencia de Paternidad</strong>:',
+                options: [
+                    { text: '¿Cuántos días se otorgan?', nextNode: 'respDiasPaternidad' },
+                    { text: '¿Documentos y plazos?', nextNode: 'respDocsPaternidad' },
+                    { text: '¿Cómo se calcula el sueldo?', nextNode: 'respSueldoPaternidad' },
+                    { text: '‹ Regresar a Licencias', nextNode: 'licencias' },
+                ],
+                isQuestion: true
+            },
+            'respDiasPaternidad': { message: 'Se otorgan <strong>15 días</strong> si el parto es normal y <strong>20 días</strong> si es por cesárea o parto múltiple. Hay días adicionales por bebés prematuros o complicaciones.', options: [{ text: '‹ Regresar a Licencia de Paternidad', nextNode: 'licPaternidad' }], isQuestion: false },
+            'respDocsPaternidad': { message: 'Debes presentar el Certificado de nacido vivo y la Partida de nacimiento, máximo hasta el tercer día del inicio de tu licencia de paternidad.', options: [{ text: '‹ Regresar a Licencia de Paternidad', nextNode: 'licPaternidad' }], isQuestion: false },
+            'respSueldoPaternidad': { message: 'Recibirás por parte de la empresa el <strong>100% de tu sueldo</strong> durante los días de tu licencia de paternidad.', options: [{ text: '‹ Regresar a Licencia de Paternidad', nextNode: 'licPaternidad' }], isQuestion: false },
+
+            // Grupo: Préstamos
+            'prestamos': {
+                message: 'Has elegido <strong>Préstamos</strong>. ¿Cuál es tu consulta?',
+                options: [
+                    { text: '¿Motivos para solicitar un préstamo?', nextNode: 'respMotivosPrestamo' },
+                    { text: '¿Documentos necesarios?', nextNode: 'respDocsPrestamo' },
+                    { text: '¿Requisitos para solicitar?', nextNode: 'respRequisitosPrestamo' },
+                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                ],
+                isQuestion: true
+            },
+            'respMotivosPrestamo': { message: 'Los préstamos se otorgan por razones de necesidad o emergencia en las siguientes áreas: <strong>Salud, mejoramiento de vivienda y educación</strong>.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'prestamos' }], isQuestion: false },
+            'respDocsPrestamo': { message: 'Debes presentar soportes según el motivo: receta médica, proformas de materiales, fotos del mejoramiento, etc. Los documentos deben estar a nombre del trabajador y con fecha actualizada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'prestamos' }], isQuestion: false },
+            'respRequisitosPrestamo': { message: 'Puedes solicitar un préstamo luego de cumplir <strong>un año de trabajo</strong> en la empresa, y se aprueba en casos de alguna emergencia o necesidad comprobada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'prestamos' }], isQuestion: false },
+        };
+
+        // --- Lógica del Chatbot ---
+        const messagesContainer = document.getElementById('chat-messages');
+        const optionsContainer = document.getElementById('chat-options');
+        let currentNodeKey = 'root';
+
+        function renderNode(nodeKey) {
+            const node = chatTree[nodeKey];
+            if (!node) return;
+
+            // 1. Añadir el mensaje del bot al chat
+            const botMessageDiv = document.createElement('div');
+            botMessageDiv.className = 'flex items-start gap-3';
+            botMessageDiv.innerHTML = `
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="bg-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-xs md:max-w-md shadow">
+                    <p class="text-sm">${node.message}</p>
+                </div>
+            `;
+            messagesContainer.appendChild(botMessageDiv);
+
+            // 2. Limpiar opciones anteriores y renderizar las nuevas
+            optionsContainer.innerHTML = '';
+            if (node.options) {
+                const optionsWrapper = document.createElement('div');
+                optionsWrapper.className = 'space-y-2';
+
+                node.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.innerHTML = option.text;
+                    button.className = 'w-full text-left p-3 bg-white border border-gray-300 rounded-lg text-blue-600 font-semibold chat-option-button shadow-sm';
+                    button.onclick = () => handleOptionClick(option, node.isQuestion);
+                    optionsWrapper.appendChild(button);
+                });
+                optionsContainer.appendChild(optionsWrapper);
+            }
+
+            // 3. Hacer scroll hacia el último mensaje
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function handleOptionClick(option, isQuestion) {
+            if (isQuestion) {
+                 // Añadir la respuesta del usuario al chat
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.className = 'flex items-start gap-3 justify-end';
+                userMessageDiv.innerHTML = `
+                    <div class="bg-blue-600 text-white p-3 rounded-lg rounded-br-none max-w-xs md:max-w-md shadow">
+                        <p class="text-sm">${option.text.replace('‹ ', '')}</p>
+                    </div>
+                `;
+                messagesContainer.appendChild(userMessageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // Navegar al siguiente nodo después de un breve retraso para simular "pensamiento"
+            optionsContainer.innerHTML = '<p class="text-center text-gray-500 text-sm animate-pulse">Escribiendo...</p>';
+            setTimeout(() => {
+                currentNodeKey = option.nextNode;
+                renderNode(currentNodeKey);
+            }, 500);
+        }
+
+        // Iniciar el chat
+        window.onload = () => {
+            renderNode('root');
+        };
+    </script>
+
+</body>
+</html>
