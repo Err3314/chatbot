@@ -91,6 +91,7 @@
                     { text: '¿Cómo puedo referir a alguien?', nextNode: 'respuestaReferir' },
                     { text: '¿Dónde puedo postular?', nextNode: 'respuestaPostular' },
                     { text: '‹ Regresar al menú anterior', nextNode: 'seleccion' },
+                    { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
                 ],
                 isQuestion: true
             },
@@ -100,128 +101,79 @@
                     { text: '¿Cómo valido horas de pasantía?', nextNode: 'respuestaPasantia' },
                     { text: '¿Cómo actualizo mi información?', nextNode: 'respuestaActualizarInfo' },
                     { text: '‹ Regresar al menú anterior', nextNode: 'seleccion' },
+                    { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
                 ],
                 isQuestion: true
             },
-            'respuestaReferir': {
-                message: 'Para referir a alguien, debes seguir el proceso establecido en el portal del empleado o comunicarte directamente con el área de Selección para obtener el formulario correspondiente.',
-                options: [{ text: '‹ Regresar a Postulación', nextNode: 'postulacion' }],
-                isQuestion: false
-            },
-            'respuestaPostular': {
-                message: 'Puedes encontrar todas nuestras vacantes abiertas y postular a través de nuestro portal de empleos oficial o en las plataformas de reclutamiento asociadas.',
-                options: [{ text: '‹ Regresar a Postulación', nextNode: 'postulacion' }],
-                isQuestion: false
-            },
-            'respuestaPasantia': {
-                message: 'Para validar horas de pasantía con tu experiencia laboral, necesitas presentar un certificado de tus pasantías junto con una solicitud formal al departamento de Talento Humano para su revisión y aprobación.',
-                options: [{ text: '‹ Regresar a Personal', nextNode: 'personal' }],
-                isQuestion: false
-            },
-            'respuestaActualizarInfo': {
-                message: 'Puedes actualizar tu información personal (dirección, estado civil, etc.) directamente en el portal del empleado o solicitando el formulario de actualización de datos a Talento Humano.',
-                options: [{ text: '‹ Regresar a Personal', nextNode: 'personal' }],
-                isQuestion: false
-            },
+            'respuestaReferir': { message: 'Para referir a alguien, debes seguir el proceso establecido en el portal del empleado o comunicarte directamente con el área de Selección para obtener el formulario correspondiente.', options: [{ text: '‹ Regresar a Postulación', nextNode: 'postulacion' }], isQuestion: false },
+            'respuestaPostular': { message: 'Puedes encontrar todas nuestras vacantes abiertas y postular a través de nuestro portal de empleos oficial o en las plataformas de reclutamiento asociadas.', options: [{ text: '‹ Regresar a Postulación', nextNode: 'postulacion' }], isQuestion: false },
+            'respuestaPasantia': { message: 'Para validar horas de pasantía con tu experiencia laboral, necesitas presentar un certificado de tus pasantías junto con una solicitud formal al departamento de Talento Humano para su revisión y aprobación.', options: [{ text: '‹ Regresar a Personal', nextNode: 'personal' }], isQuestion: false },
+            'respuestaActualizarInfo': { message: 'Puedes actualizar tu información personal (dirección, estado civil, etc.) directamente en el portal del empleado o solicitando el formulario de actualización de datos a Talento Humano.', options: [{ text: '‹ Regresar a Personal', nextNode: 'personal' }], isQuestion: false },
 
             // --- ÁREA: TRABAJO SOCIAL ---
             'trabajoSocial': {
                 message: 'Entendido. Has elegido el área de <strong>Trabajo Social</strong>. ¿Sobre qué grupo de temas necesitas información?',
                 options: [
-                    { text: 'Uniformes', nextNode: 'uniformes' },
-                    { text: 'Charlas', nextNode: 'charlas' },
-                    { text: 'Denuncias', nextNode: 'denuncias' },
-                    { text: 'Permisos Médicos', nextNode: 'permisosMedicos' },
-                    { text: 'Subsidios', nextNode: 'subsidios' },
-                    { text: 'Licencias', nextNode: 'licencias' },
-                    { text: 'Préstamos', nextNode: 'prestamos' },
-                    { text: '‹ Regresar al menú anterior', nextNode: 'root' },
+                    { text: 'Uniformes', nextNode: 'uniformes' }, { text: 'Charlas', nextNode: 'charlas' }, { text: 'Denuncias', nextNode: 'denuncias' }, { text: 'Permisos Médicos', nextNode: 'permisosMedicos' }, { text: 'Subsidios', nextNode: 'subsidios' }, { text: 'Licencias', nextNode: 'licencias' }, { text: 'Préstamos', nextNode: 'prestamos' }, { text: '‹ Regresar al menú anterior', nextNode: 'root' },
                 ],
                 isQuestion: true
             },
-            
-            // Grupo: Uniformes
             'uniformes': {
                 message: 'Has elegido <strong>Uniformes</strong>. ¿Cuál es tu consulta?',
                 options: [
-                    { text: '¿Cuántas dotaciones se reciben al año?', nextNode: 'respDotaciones' },
-                    { text: '¿Cómo reporto un daño en mi uniforme?', nextNode: 'respReportarDano' },
-                    { text: '¿Qué hago si mi uniforme no es mi talla?', nextNode: 'respTallaIncorrecta' },
-                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                    { text: '¿Cuántas dotaciones se reciben al año?', nextNode: 'respDotaciones' }, { text: '¿Cómo reporto un daño en mi uniforme?', nextNode: 'respReportarDano' }, { text: '¿Qué hago si mi uniforme no es mi talla?', nextNode: 'respTallaIncorrecta' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
                 ],
                 isQuestion: true
             },
             'respDotaciones': { message: 'Se reciben <strong>dos dotaciones</strong> de uniforme al año.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'uniformes' }], isQuestion: false },
             'respReportarDano': { message: 'Debes reportar el daño a tu jefe directo. Si es por robo, es indispensable presentar la denuncia correspondiente.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'uniformes' }], isQuestion: false },
             'respTallaIncorrecta': { message: 'Debes contactarte con el <strong>Trabajador Social</strong> de tu zona para gestionar el cambio.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'uniformes' }], isQuestion: false },
-
-            // Grupo: Charlas
             'charlas': {
                 message: 'Has elegido <strong>Charlas</strong>. ¿Cuál es tu consulta?',
                 options: [
-                    { text: '¿Cómo puedo participar en las charlas?', nextNode: 'respParticiparCharlas' },
-                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                    { text: '¿Cómo puedo participar en las charlas?', nextNode: 'respParticiparCharlas' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
                 ],
                 isQuestion: true
             },
             'respParticiparCharlas': { message: 'Tenemos un calendario anual de charlas. Puedes consultar las fechas y temas con tu jefe inmediato o con el trabajador social de tu zona.', options: [{ text: '‹ Regresar a Charlas', nextNode: 'charlas' }], isQuestion: false },
-
-            // Grupo: Denuncias
             'denuncias': {
                 message: 'Has elegido <strong>Denuncias</strong>. ¿Cuál es tu consulta?',
                 options: [
-                    { text: '¿Cómo puedo realizar una denuncia?', nextNode: 'respRealizarDenuncia' },
-                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                    { text: '¿Cómo puedo realizar una denuncia?', nextNode: 'respRealizarDenuncia' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
                 ],
                 isQuestion: true
             },
             'respRealizarDenuncia': { message: 'Puedes realizar una denuncia de forma confidencial a través de los siguientes canales:<br><strong>Web:</strong> <a href="https://www.lineaeticagrupoprimax.com/" target="_blank" class="text-blue-500 hover:underline">lineaeticagrupoprimax.com</a><br><strong>Email:</strong> reportes@lineaeticagrupoprimax.com<br><strong>WhatsApp:</strong> (+51) 989043514', options: [{ text: '‹ Regresar a Denuncias', nextNode: 'denuncias' }], isQuestion: false },
-
-            // Grupo: Permisos Médicos
             'permisosMedicos': {
                 message: 'Has elegido <strong>Permisos Médicos</strong>. ¿Cuál es tu consulta?',
                 options: [
-                    { text: '¿Plazo para entregar permiso médico?', nextNode: 'respPlazoPermiso' },
-                    { text: '¿Qué pasa si no tengo derecho al IESS?', nextNode: 'respSinIESS' },
-                    { text: '¿Cómo revalidar descansos médicos?', nextNode: 'respRevalidarDescanso' },
-                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                    { text: '¿Plazo para entregar permiso médico?', nextNode: 'respPlazoPermiso' }, { text: '¿Qué pasa si no tengo derecho al IESS?', nextNode: 'respSinIESS' }, { text: '¿Cómo revalidar descansos médicos?', nextNode: 'respRevalidarDescanso' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
                 ],
                 isQuestion: true
             },
             'respPlazoPermiso': { message: 'Tienes un plazo de <strong>3 días</strong> para poder presentar un certificado médico y justificar tu ausencia.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'permisosMedicos' }], isQuestion: false },
             'respSinIESS': { message: 'Si no tienes derecho al IESS, puedes acercarte a centros médicos particulares, Hospitales del Ministerio de Salud Pública o el Dispensario Médico de Atimasa.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'permisosMedicos' }], isQuestion: false },
             'respRevalidarDescanso': { message: 'Puede ser de manera <strong>online</strong> si el certificado tiene firma digital, o de manera <strong>presencial</strong> en un Hospital del IESS si tiene firma manual.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'permisosMedicos' }], isQuestion: false },
-
-            // Grupo: Subsidios
             'subsidios': {
                 message: 'Has elegido <strong>Subsidios</strong>. ¿Cuál es tu consulta?',
                 options: [
-                    { text: '¿Cómo se calcula el subsidio?', nextNode: 'respCalculoSubsidio' },
-                    { text: '¿Tiempo máximo de subsidio?', nextNode: 'respMaxSubsidio' },
-                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                    { text: '¿Cómo se calcula el subsidio?', nextNode: 'respCalculoSubsidio' }, { text: '¿Tiempo máximo de subsidio?', nextNode: 'respMaxSubsidio' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
                 ],
                 isQuestion: true
             },
             'respCalculoSubsidio': { message: 'El subsidio por descanso médico se calcula así:<br>- Los 3 primeros días no son remunerados.<br>- Desde el día 4 hasta el día 21, la empresa paga el 50% del sueldo.<br>- A partir del día 22, el IESS paga el 75% y la empresa el 25%.', options: [{ text: '‹ Regresar a Subsidios', nextNode: 'subsidios' }], isQuestion: false },
             'respMaxSubsidio': { message: 'El tiempo máximo de subsidio por descanso médico es de <strong>hasta 6 meses</strong>.', options: [{ text: '‹ Regresar a Subsidios', nextNode: 'subsidios' }], isQuestion: false },
-
-            // Grupo: Licencias
             'licencias': {
                 message: 'Has elegido <strong>Licencias</strong>. ¿Qué tipo de licencia te interesa?',
                 options: [
-                    { text: 'Maternidad', nextNode: 'licMaternidad' },
-                    { text: 'Paternidad', nextNode: 'licPaternidad' },
-                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                    { text: 'Maternidad', nextNode: 'licMaternidad' }, { text: 'Paternidad', nextNode: 'licPaternidad' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
                 ],
                 isQuestion: true
             },
             'licMaternidad': {
                 message: 'Consultas sobre <strong>Licencia de Maternidad</strong>:',
                 options: [
-                    { text: '¿Cuántos días se otorgan?', nextNode: 'respDiasMaternidad' },
-                    { text: '¿Documentos y plazos?', nextNode: 'respDocsMaternidad' },
-                    { text: '¿Cómo se calcula el sueldo?', nextNode: 'respSueldoMaternidad' },
-                    { text: '‹ Regresar a Licencias', nextNode: 'licencias' },
+                    { text: '¿Cuántos días se otorgan?', nextNode: 'respDiasMaternidad' }, { text: '¿Documentos y plazos?', nextNode: 'respDocsMaternidad' }, { text: '¿Cómo se calcula el sueldo?', nextNode: 'respSueldoMaternidad' }, { text: '‹ Regresar a Licencias', nextNode: 'licencias' },
                 ],
                 isQuestion: true
             },
@@ -231,96 +183,209 @@
             'licPaternidad': {
                 message: 'Consultas sobre <strong>Licencia de Paternidad</strong>:',
                 options: [
-                    { text: '¿Cuántos días se otorgan?', nextNode: 'respDiasPaternidad' },
-                    { text: '¿Documentos y plazos?', nextNode: 'respDocsPaternidad' },
-                    { text: '¿Cómo se calcula el sueldo?', nextNode: 'respSueldoPaternidad' },
-                    { text: '‹ Regresar a Licencias', nextNode: 'licencias' },
+                    { text: '¿Cuántos días se otorgan?', nextNode: 'respDiasPaternidad' }, { text: '¿Documentos y plazos?', nextNode: 'respDocsPaternidad' }, { text: '¿Cómo se calcula el sueldo?', nextNode: 'respSueldoPaternidad' }, { text: '‹ Regresar a Licencias', nextNode: 'licencias' },
                 ],
                 isQuestion: true
             },
             'respDiasPaternidad': { message: 'Se otorgan <strong>15 días</strong> si el parto es normal y <strong>20 días</strong> si es por cesárea o parto múltiple. Hay días adicionales por bebés prematuros o complicaciones.', options: [{ text: '‹ Regresar a Licencia de Paternidad', nextNode: 'licPaternidad' }], isQuestion: false },
             'respDocsPaternidad': { message: 'Debes presentar el Certificado de nacido vivo y la Partida de nacimiento, máximo hasta el tercer día del inicio de tu licencia de paternidad.', options: [{ text: '‹ Regresar a Licencia de Paternidad', nextNode: 'licPaternidad' }], isQuestion: false },
             'respSueldoPaternidad': { message: 'Recibirás por parte de la empresa el <strong>100% de tu sueldo</strong> durante los días de tu licencia de paternidad.', options: [{ text: '‹ Regresar a Licencia de Paternidad', nextNode: 'licPaternidad' }], isQuestion: false },
-
-            // Grupo: Préstamos
             'prestamos': {
                 message: 'Has elegido <strong>Préstamos</strong>. ¿Cuál es tu consulta?',
                 options: [
-                    { text: '¿Motivos para solicitar un préstamo?', nextNode: 'respMotivosPrestamo' },
-                    { text: '¿Documentos necesarios?', nextNode: 'respDocsPrestamo' },
-                    { text: '¿Requisitos para solicitar?', nextNode: 'respRequisitosPrestamo' },
-                    { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' },
+                    { text: '¿Motivos para solicitar un préstamo?', nextNode: 'respMotivosPrestamo' }, { text: '¿Documentos necesarios?', nextNode: 'respDocsPrestamo' }, { text: '¿Requisitos para solicitar?', nextNode: 'respRequisitosPrestamo' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
                 ],
                 isQuestion: true
             },
             'respMotivosPrestamo': { message: 'Los préstamos se otorgan por razones de necesidad o emergencia en las siguientes áreas: <strong>Salud, mejoramiento de vivienda y educación</strong>.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'prestamos' }], isQuestion: false },
             'respDocsPrestamo': { message: 'Debes presentar soportes según el motivo: receta médica, proformas de materiales, fotos del mejoramiento, etc. Los documentos deben estar a nombre del trabajador y con fecha actualizada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'prestamos' }], isQuestion: false },
             'respRequisitosPrestamo': { message: 'Puedes solicitar un préstamo luego de cumplir <strong>un año de trabajo</strong> en la empresa, y se aprueba en casos de alguna emergencia o necesidad comprobada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'prestamos' }], isQuestion: false },
+
+            // --- NODOS PARA PREGUNTA ABIERTA (NUEVO FLUJO) ---
+            'contact_askName': {
+                message: 'Entendido. Por favor, escribe tu <strong>nombre completo</strong>.',
+                isInputNode: true,
+                inputKey: 'name',
+                nextNode: 'contact_askArea'
+            },
+            'contact_askArea': {
+                message: 'Gracias. Ahora, por favor, indica tu <strong>área o estación</strong>.',
+                isInputNode: true,
+                inputKey: 'area',
+                nextNode: 'contact_askQuestion'
+            },
+            'contact_askQuestion': {
+                message: 'Perfecto. Finalmente, escribe tu consulta (<strong>máximo 30 caracteres</strong>).',
+                isInputNode: true,
+                inputKey: 'question',
+                maxLength: 30,
+                nextNode: 'contact_compose'
+            },
         };
 
         // --- Lógica del Chatbot ---
         const messagesContainer = document.getElementById('chat-messages');
         const optionsContainer = document.getElementById('chat-options');
         let currentNodeKey = 'root';
+        let contactInfo = {}; // Objeto para guardar la información del usuario
 
         function renderNode(nodeKey) {
             const node = chatTree[nodeKey];
             if (!node) return;
+            currentNodeKey = nodeKey; 
 
             // 1. Añadir el mensaje del bot al chat
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'flex items-start gap-3';
             botMessageDiv.innerHTML = `
                 <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg>
                 </div>
                 <div class="bg-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-xs md:max-w-md shadow">
                     <p class="text-sm">${node.message}</p>
-                </div>
-            `;
+                </div>`;
             messagesContainer.appendChild(botMessageDiv);
 
-            // 2. Limpiar opciones anteriores y renderizar las nuevas
+            // 2. Limpiar opciones y renderizar las nuevas o el campo de entrada
             optionsContainer.innerHTML = '';
-            if (node.options) {
-                const optionsWrapper = document.createElement('div');
-                optionsWrapper.className = 'space-y-2';
-
-                node.options.forEach(option => {
-                    const button = document.createElement('button');
-                    button.innerHTML = option.text;
-                    button.className = 'w-full text-left p-3 bg-white border border-gray-300 rounded-lg text-blue-600 font-semibold chat-option-button shadow-sm';
-                    button.onclick = () => handleOptionClick(option, node.isQuestion);
-                    optionsWrapper.appendChild(button);
-                });
-                optionsContainer.appendChild(optionsWrapper);
+            if (node.isInputNode) {
+                renderInputNode(node);
+            } else if (node.options) {
+                renderOptionButtons(node);
             }
 
             // 3. Hacer scroll hacia el último mensaje
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
+        function renderOptionButtons(node) {
+            const optionsWrapper = document.createElement('div');
+            optionsWrapper.className = 'space-y-2';
+            node.options.forEach(option => {
+                const button = document.createElement('button');
+                button.innerHTML = option.text;
+                button.className = 'w-full text-left p-3 bg-white border border-gray-300 rounded-lg text-blue-600 font-semibold chat-option-button shadow-sm';
+                button.onclick = () => handleOptionClick(option, node.isQuestion);
+                optionsWrapper.appendChild(button);
+            });
+            optionsContainer.appendChild(optionsWrapper);
+        }
+
+        function renderInputNode(node) {
+            const inputWrapper = document.createElement('div');
+            inputWrapper.className = 'space-y-3';
+            
+            const textInput = document.createElement('input');
+            textInput.type = 'text';
+            textInput.id = 'user-input-field';
+            textInput.className = 'w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition';
+            textInput.placeholder = 'Escribe aquí...';
+            if (node.maxLength) {
+                textInput.maxLength = node.maxLength;
+            }
+            // Enfocar el campo de texto automáticamente
+            setTimeout(() => textInput.focus(), 100);
+
+            const submitButton = document.createElement('button');
+            submitButton.innerHTML = node.nextNode === 'contact_compose' ? 'Enviar por WhatsApp' : 'Siguiente';
+            submitButton.className = 'w-full p-3 bg-blue-600 text-white font-semibold rounded-lg chat-option-button shadow-sm';
+            
+            submitButton.onclick = () => {
+                const userInput = textInput.value;
+                if (userInput.trim() === '') {
+                    textInput.classList.add('border-red-500');
+                    return;
+                }
+                handleInputSubmit(userInput, node);
+            };
+
+            // Permitir enviar con la tecla Enter
+            textInput.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    submitButton.click();
+                }
+            };
+
+            inputWrapper.appendChild(textInput);
+            inputWrapper.appendChild(submitButton);
+            optionsContainer.appendChild(inputWrapper);
+        }
+
+        function handleInputSubmit(value, node) {
+            // Guardar el valor
+            contactInfo[node.inputKey] = value;
+
+            // Mostrar la respuesta del usuario en el chat
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'flex items-start gap-3 justify-end';
+            userMessageDiv.innerHTML = `<div class="bg-blue-600 text-white p-3 rounded-lg rounded-br-none max-w-xs md:max-w-md shadow"><p class="text-sm">${value}</p></div>`;
+            messagesContainer.appendChild(userMessageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Navegar al siguiente paso o componer el mensaje final
+            optionsContainer.innerHTML = '<p class="text-center text-gray-500 text-sm animate-pulse">Escribiendo...</p>';
+            setTimeout(() => {
+                if (node.nextNode === 'contact_compose') {
+                    composeAndSendWhatsApp();
+                } else {
+                    renderNode(node.nextNode);
+                }
+            }, 500);
+        }
+
+        function composeAndSendWhatsApp() {
+            // Muestra mensaje de confirmación del bot
+            const botConfirmDiv = document.createElement('div');
+            botConfirmDiv.className = 'flex items-start gap-3';
+            botConfirmDiv.innerHTML = `
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg>
+                </div>
+                <div class="bg-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-xs md:max-w-md shadow">
+                    <p class="text-sm">¡Gracias! Ahora se abrirá WhatsApp con tu pregunta lista para ser enviada. Por favor, presiona "Enviar".</p>
+                </div>`;
+            messagesContainer.appendChild(botConfirmDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            optionsContainer.innerHTML = '';
+
+            // Prepara y dispara el enlace de WhatsApp
+            const finalMessage = `Hola mi nombre es '${contactInfo.name}' y soy de '${contactInfo.area}' y tengo la siguiente consulta:\n"${contactInfo.question}"`;
+            const text = encodeURIComponent(finalMessage);
+            const phoneNumber = '593967527939';
+            
+            window.location.href = `https://wa.me/${phoneNumber}?text=${text}`;
+            
+            // Vuelve al menú principal después de un momento
+            setTimeout(() => {
+                const backToMenuButton = document.createElement('button');
+                backToMenuButton.innerHTML = '‹ Volver al menú principal';
+                backToMenuButton.className = 'w-full text-left p-3 bg-white border border-gray-300 rounded-lg text-blue-600 font-semibold chat-option-button shadow-sm';
+                backToMenuButton.onclick = () => {
+                    contactInfo = {}; // Limpiar la info para la próxima vez
+                    renderNode('root');
+                }
+                optionsContainer.appendChild(backToMenuButton);
+            }, 3000);
+        }
+
         function handleOptionClick(option, isQuestion) {
             if (isQuestion) {
-                 // Añadir la respuesta del usuario al chat
                 const userMessageDiv = document.createElement('div');
                 userMessageDiv.className = 'flex items-start gap-3 justify-end';
-                userMessageDiv.innerHTML = `
-                    <div class="bg-blue-600 text-white p-3 rounded-lg rounded-br-none max-w-xs md:max-w-md shadow">
-                        <p class="text-sm">${option.text.replace('‹ ', '')}</p>
-                    </div>
-                `;
+                userMessageDiv.innerHTML = `<div class="bg-blue-600 text-white p-3 rounded-lg rounded-br-none max-w-xs md:max-w-md shadow"><p class="text-sm">${option.text.replace('‹ ', '')}</p></div>`;
                 messagesContainer.appendChild(userMessageDiv);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
+            
+            // Si el usuario va a iniciar el contacto, limpiar la información previa
+            if (option.nextNode === 'contact_askName') {
+                contactInfo = {};
+            }
 
-            // Navegar al siguiente nodo después de un breve retraso para simular "pensamiento"
             optionsContainer.innerHTML = '<p class="text-center text-gray-500 text-sm animate-pulse">Escribiendo...</p>';
             setTimeout(() => {
-                currentNodeKey = option.nextNode;
-                renderNode(currentNodeKey);
+                renderNode(option.nextNode);
             }, 500);
         }
 
