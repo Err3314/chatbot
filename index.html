@@ -9,41 +9,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Estilo para la barra de desplazamiento */
-        #chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-        #chat-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        #chat-messages::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 6px;
-        }
-        #chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        .chat-option-button {
-            transition: all 0.2s ease-in-out;
-        }
-        .chat-option-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        #chat-messages::-webkit-scrollbar { width: 6px; }
+        #chat-messages::-webkit-scrollbar-track { background: #f1f1f1; }
+        #chat-messages::-webkit-scrollbar-thumb { background: #888; border-radius: 6px; }
+        #chat-messages::-webkit-scrollbar-thumb:hover { background: #555; }
+        .chat-option-button { transition: all 0.2s ease-in-out; }
+        .chat-option-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
     <div class="w-full max-w-md mx-auto bg-white rounded-2xl shadow-2xl flex flex-col h-[90vh] max-h-[800px]">
         <!-- Cabecera del Chat -->
-        <header class="bg-blue-600 text-white p-4 rounded-t-2xl flex items-center shadow-lg">
+        <header class="bg-[#1D23AF] text-white p-4 rounded-t-2xl flex items-center shadow-lg">
             <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mr-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#1D23AF]" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg>
             </div>
             <div>
                 <h1 class="text-xl font-bold">Asistente de Talento Humano</h1>
@@ -52,228 +33,121 @@
         </header>
 
         <!-- Contenedor de Mensajes -->
-        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4">
-            <!-- Los mensajes del chat se insertarán aquí -->
-        </div>
+        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4"></div>
 
         <!-- Contenedor de Opciones -->
-        <div id="chat-options" class="p-4 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
-             <!-- Las opciones del chat se insertarán aquí -->
-        </div>
+        <div id="chat-options" class="p-4 bg-gray-50 border-t border-gray-200 rounded-b-2xl"></div>
     </div>
 
     <script>
-        // --- NÚMEROS DE WHATSAPP POR ÁREA ---
-        const phoneNumbers = {
-            seleccion: '593987529030',
-            trabajoSocial: '593984432093',
-            nomina: '593967527939'
-        };
+        // --- CONFIGURACIÓN ---
+        const asesorPhoneNumber = '593967527939';
+        const LOGGING_URL = 'https://script.google.com/macros/s/AKfycbwmNyeXG1Ienq24WweeE-Umx8n72vA3MCCXsdpHh02IjWbTqWEbYts5LePXUaj5k29E2Q/exec';
 
-        // --- Estructura de datos del Chatbot ---
+        // --- Estructura de datos del Chatbot (CON GRUPO Y CATEGORÍA) ---
         const chatTree = {
-            // NODO RAÍZ (INICIO)
-            'root': {
-                message: '¡Hola! Soy tu asistente virtual de Talento Humano. ¿En qué área te puedo ayudar?',
-                options: [
-                    { text: 'Selección', nextNode: 'seleccion', area: 'seleccion' },
-                    { text: 'Trabajo Social', nextNode: 'trabajoSocial', area: 'trabajoSocial' },
-                    { text: 'Nómina', nextNode: 'nomina', area: 'nomina' },
-                ],
-                isQuestion: true
-            },
+            'root': { message: '¡Hola! Soy tu asistente virtual de Talento Humano. ¿Sobre qué grupo necesitas ayuda?', options: [ { text: 'Selección', nextNode: 'grupo_seleccion' }, { text: 'Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Nómina', nextNode: 'grupo_nomina' }, ], isQuestion: true },
+            'grupo_seleccion': { message: 'Has elegido el grupo de <strong>Selección</strong>. ¿Sobre qué categoría necesitas información?', options: [ { text: 'Referir personas', nextNode: 'categoria_referir_personas' }, { text: 'Datos Personales', nextNode: 'categoria_datos_personales' }, { text: '‹ Regresar al menú principal', nextNode: 'root' } ], isQuestion: true, grupo: 'Selección' },
+            'categoria_referir_personas': { message: 'Has elegido <strong>Referir personas</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo referir a alguien?', nextNode: 'resp_referir_0' }, { text: '¿Dónde pueden postular?', nextNode: 'resp_referir_1' }, { text: '‹ Regresar a Selección', nextNode: 'grupo_seleccion' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Selección', category: 'Referir personas' },
+            'resp_referir_0': { message: 'Para referir a alguien, debes seguir el proceso establecido en el portal del empleado o comunicarte directamente con el área de Selección para obtener el formulario correspondiente.', options: [{ text: '‹ Regresar a Referir personas', nextNode: 'categoria_referir_personas' }], isQuestion: false },
+            'resp_referir_1': { message: 'Puedes encontrar todas nuestras vacantes abiertas y postular a través de nuestro portal de empleos oficial o en las plataformas de reclutamiento asociadas.', options: [{ text: '‹ Regresar a Referir personas', nextNode: 'categoria_referir_personas' }], isQuestion: false },
+            'categoria_datos_personales': { message: 'Has elegido <strong>Datos Personales</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo validar horas de pasantía con experiencia laboral?', nextNode: 'resp_datos_0' }, { text: '¿Cómo puedo actualizar mi información personal?', nextNode: 'resp_datos_1' }, { text: '‹ Regresar a Selección', nextNode: 'grupo_seleccion' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Selección', category: 'Datos Personales' },
+            'resp_datos_0': { message: 'Para validar horas de pasantía con tu experiencia laboral, necesitas presentar un certificado de tus pasantías junto con una solicitud formal al departamento de Talento Humano para su revisión y aprobación.', options: [{ text: '‹ Regresar a Datos Personales', nextNode: 'categoria_datos_personales' }], isQuestion: false },
+            'resp_datos_1': { message: 'Puedes actualizar tu información personal (dirección, estado civil, etc.) directamente en el portal del empleado o solicitando el formulario de actualización de datos a Talento Humano.', options: [{ text: '‹ Regresar a Datos Personales', nextNode: 'categoria_datos_personales' }], isQuestion: false },
+            'grupo_trabajo_social': { message: 'Has elegido el grupo de <strong>Trabajo Social</strong>. ¿Sobre qué categoría necesitas información?', options: [ { text: 'Uniformes', nextNode: 'categoria_uniformes' }, { text: 'Denuncias', nextNode: 'categoria_denuncias' }, { text: 'Charlas', nextNode: 'categoria_charlas' }, { text: 'Permisos Médicos', nextNode: 'categoria_permisos_medicos' }, { text: 'Subsidios', nextNode: 'categoria_subsidios' }, { text: 'Licencias', nextNode: 'categoria_licencias' }, { text: 'Préstamos', nextNode: 'categoria_prestamos' }, { text: '‹ Regresar al menú principal', nextNode: 'root' } ], isQuestion: true, grupo: 'Trabajo Social' },
+            'categoria_uniformes': { message: 'Has elegido <strong>Uniformes</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuántas dotaciones de uniforme se reciben al año?', nextNode: 'resp_uniformes_0' }, { text: '¿Cómo reporto un daño en mi uniforme?', nextNode: 'resp_uniformes_1' }, { text: '¿Qué hago si mi uniforme no es de mi talla?', nextNode: 'resp_uniformes_2' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Trabajo Social', category: 'Uniformes' },
+            'resp_uniformes_0': { message: 'Se reciben dos dotaciones de uniforme al año.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'categoria_uniformes' }], isQuestion: false },
+            'resp_uniformes_1': { message: 'Debes reportar el daño a tu jefe directo. Si es por robo, es indispensable presentar la denuncia correspondiente.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'categoria_uniformes' }], isQuestion: false },
+            'resp_uniformes_2': { message: 'Debes contactarte con el Trabajador Social de tu zona para gestionar el cambio.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'categoria_uniformes' }], isQuestion: false },
+            'categoria_denuncias': { message: 'Has elegido <strong>Denuncias</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo realizar una denuncia en caso de Discriminación, acoso laboral, acoso sexual, etc?', nextNode: 'resp_denuncias_0' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Trabajo Social', category: 'Denuncias' },
+            'resp_denuncias_0': { message: 'Puedes realizar una denuncia de forma confidencial a través de los siguientes canales:<br><strong>Web:</strong> <a href="https://www.lineaeticagrupoprimax.com/" target="_blank" class="text-[#F75701] hover:underline">lineaeticagrupoprimax.com</a><br><strong>Email:</strong> reportes@lineaeticagrupoprimax.com<br><strong>WhatsApp:</strong> (+51) 989043514', options: [{ text: '‹ Regresar a Denuncias', nextNode: 'categoria_denuncias' }], isQuestion: false },
+            'categoria_charlas': { message: 'Has elegido <strong>Charlas</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo participar en las charlas que brinda la compañía?', nextNode: 'resp_charlas_0' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Trabajo Social', category: 'Charlas' },
+            'resp_charlas_0': { message: 'Tenemos un calendario anual de charlas. Puedes consultar las fechas y temas con tu jefe inmediato o con el trabajador social de tu zona.', options: [{ text: '‹ Regresar a Charlas', nextNode: 'categoria_charlas' }], isQuestion: false },
+            'categoria_permisos_medicos': { message: 'Has elegido <strong>Permisos Médicos</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuál es el plazo para entregar un permiso médico?', nextNode: 'resp_permisos_0' }, { text: '¿Qué sucede si no tengo derecho al IESS?', nextNode: 'resp_permisos_1' }, { text: '¿Cómo se revalidan los descansos médicos?', nextNode: 'resp_permisos_2' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Trabajo Social', category: 'Permisos Médicos' },
+            'resp_permisos_0': { message: 'Tienes un plazo de 3 días para poder presentar un certificado médico y justificar tu ausencia.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'categoria_permisos_medicos' }], isQuestion: false },
+            'resp_permisos_1': { message: 'Si no tienes derecho al IESS, puedes acercarte a centros médicos particulares, Hospitales del Ministerio de Salud Pública o el Dispensario Médico de Atimasa.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'categoria_permisos_medicos' }], isQuestion: false },
+            'resp_permisos_2': { message: 'Puede ser de manera online si el certificado tiene firma digital, o de manera presencial en un Hospital del IESS si tiene firma manual.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'categoria_permisos_medicos' }], isQuestion: false },
+            'categoria_subsidios': { message: 'Has elegido <strong>Subsidios</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo se calcula el subsidio por descanso médico?', nextNode: 'resp_subsidios_0' }, { text: '¿Cuál es el tiempo máximo de subsidio por descanso médico?', nextNode: 'resp_subsidios_1' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Trabajo Social', category: 'Subsidios' },
+            'resp_subsidios_0': { message: 'El subsidio por descanso médico se calcula así:<br>- Los 3 primeros días no son remunerados.<br>- Desde el día 4 hasta el día 21, la empresa paga el 50% del sueldo.<br>- A partir del día 22, el IESS paga el 75% y la empresa el 25%.', options: [{ text: '‹ Regresar a Subsidios', nextNode: 'categoria_subsidios' }], isQuestion: false },
+            'resp_subsidios_1': { message: 'El tiempo máximo de subsidio por descanso médico es de hasta 6 meses.', options: [{ text: '‹ Regresar a Subsidios', nextNode: 'categoria_subsidios' }], isQuestion: false },
+            'categoria_licencias': { message: 'Has elegido <strong>Licencias</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuántos días se otorgan por licencia de maternidad?', nextNode: 'resp_licencias_0' }, { text: '¿Qué documentos y en qué plazos debo presentar por licencia de maternidad?', nextNode: 'resp_licencias_1' }, { text: '¿Cómo se calcula el sueldo durante la licencia de maternidad?', nextNode: 'resp_licencias_2' }, { text: '¿Cuántos días se otorgan por licencia de paternidad?', nextNode: 'resp_licencias_3' }, { text: '¿Qué documentos y en qué plazos debo presentar por licencia de paternidad?', nextNode: 'resp_licencias_4' }, { text: '¿Cómo se calcula el sueldo durante la licencia de paternidad?', nextNode: 'resp_licencias_5' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Trabajo Social', category: 'Licencias' },
+            'resp_licencias_0': { message: 'Se otorgan 84 días consecutivos contados desde el nacimiento del bebé. En caso de partos múltiples, se añaden 10 días adicionales.', options: [{ text: '‹ Regresar a Licencias', nextNode: 'categoria_licencias' }], isQuestion: false },
+            'resp_licencias_1': { message: 'Debes presentar el descanso médico por los 84 días (tienes 3 días para justificarlo desde el inicio de tu licencia) y posteriormente, el certificado de nacimiento del bebé.', options: [{ text: '‹ Regresar a Licencias', nextNode: 'categoria_licencias' }], isQuestion: false },
+            'resp_licencias_2': { message: 'Recibes el 25% por parte de la empresa y el 75% por parte del IESS. Si no tienes derecho al IESS, la empresa cubre el 100%.', options: [{ text: '‹ Regresar a Licencias', nextNode: 'categoria_licencias' }], isQuestion: false },
+            'resp_licencias_3': { message: 'Se otorgan 15 días si el parto es normal y 20 días si es por cesárea o parto múltiple. Hay días adicionales por bebés prematuros o complicaciones.', options: [{ text: '‹ Regresar a Licencias', nextNode: 'categoria_licencias' }], isQuestion: false },
+            'resp_licencias_4': { message: 'Debes presentar el Certificado de nacido vivo y la Partida de nacimiento, máximo hasta el tercer día del inicio de tu licencia de paternidad.', options: [{ text: '‹ Regresar a Licencias', nextNode: 'categoria_licencias' }], isQuestion: false },
+            'resp_licencias_5': { message: 'Recibirás por parte de la empresa el 100% de tu sueldo durante los días de tu licencia de paternidad.', options: [{ text: '‹ Regresar a Licencias', nextNode: 'categoria_licencias' }], isQuestion: false },
+            'categoria_prestamos': { message: 'Has elegido <strong>Préstamos</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Por qué motivos se puede solicitar un préstamo?', nextNode: 'resp_prestamos_0' }, { text: '¿Qué documentos debo presentar para solicitar un préstamo?', nextNode: 'resp_prestamos_1' }, { text: '¿Cuáles son los requisitos para solicitar un préstamo?', nextNode: 'resp_prestamos_2' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Trabajo Social', category: 'Préstamos' },
+            'resp_prestamos_0': { message: 'Los préstamos se otorgan por razones de necesidad o emergencia en las siguientes áreas: Salud, mejoramiento de vivienda y educación.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'categoria_prestamos' }], isQuestion: false },
+            'resp_prestamos_1': { message: 'Debes presentar soportes según el motivo: receta médica, proformas de materiales, fotos del mejoramiento, etc. Los documentos deben estar a nombre del trabajador y con fecha actualizada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'categoria_prestamos' }], isQuestion: false },
+            'resp_prestamos_2': { message: 'Puedes solicitar un préstamo luego de cumplir un año de trabajo en la empresa, y se aprueba en casos de alguna emergencia o necesidad comprobada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'categoria_prestamos' }], isQuestion: false },
+            'grupo_nomina': { message: 'Has elegido el grupo de <strong>Nómina</strong>. ¿Sobre qué categoría necesitas información?', options: [ { text: 'Horas Extras', nextNode: 'categoria_horas_extras' }, { text: 'Fechas y Comprobantes de Pago', nextNode: 'categoria_fechas_pago' }, { text: 'Beneficios de Ley', nextNode: 'categoria_beneficios_ley' }, { text: 'Aportes al IESS y Fondos de Reserva', nextNode: 'categoria_aportes_iess' }, { text: 'Impuesto a la Renta', nextNode: 'categoria_impuesto_renta' }, { text: 'Anticipos de Sueldo', nextNode: 'categoria_anticipos' }, { text: 'Liquidación y Finiquito (Salida del Colaborador)', nextNode: 'categoria_liquidacion' }, { text: 'Vacaciones', nextNode: 'categoria_vacaciones' }, { text: '‹ Regresar al menú principal', nextNode: 'root' } ], isQuestion: true, grupo: 'Nómina' },
+            'categoria_horas_extras': { message: 'Has elegido <strong>Horas Extras</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo se define la jornada ordinaria de trabajo?', nextNode: 'resp_horas_0' }, { text: '¿Qué es la jornada nocturna?', nextNode: 'resp_horas_1' }, { text: '¿Qué son las horas suplementarias?', nextNode: 'resp_horas_2' }, { text: '¿Qué son las horas extraordinarias?', nextNode: 'resp_horas_3' }, { text: '¿Cómo se calcula el valor de mi hora de trabajo?', nextNode: 'resp_horas_4' }, { text: '¿Qué sucede si se aplican dos recargos a una misma jornada?', nextNode: 'resp_horas_5' }, { text: '‹ Regresar a Nómina', nextNode: 'grupo_nomina' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Nómina', category: 'Horas Extras' },
+            'resp_horas_0': { message: 'La jornada máxima ordinaria de trabajo es de 8 horas diarias.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'categoria_horas_extras' }], isQuestion: false },
+            'resp_horas_1': { message: 'La jornada nocturna corresponde al trabajo realizado entre las 19:00 y las 06:00 del día siguiente. Este horario tiene una remuneración con un recargo del 25%.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'categoria_horas_extras' }], isQuestion: false },
+            'resp_horas_2': { message: 'Son las horas trabajadas a continuación de la jornada ordinaria. El pago varía según el horario:<br>- Las que se laboran entre las 06:00 A.M. y las 00:00 A.M. tienen un recargo del 50%.<br>- Las que se laboran entre las 00:00 A.M. y las 06:00 A.M. tienen un recargo del 100%.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'categoria_horas_extras' }], isQuestion: false },
+            'resp_horas_3': { message: 'Son las horas trabajadas durante los días de descanso obligatorio o feriados establecidos en el Código del Trabajo. Estas horas se pagan con un recargo del 100% sobre el valor de la jornada diurna.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'categoria_horas_extras' }], isQuestion: false },
+            'resp_horas_4': { message: 'El valor de la hora de trabajo se obtiene al dividir el sueldo mensual para 240 horas.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'categoria_horas_extras' }], isQuestion: false },
+            'resp_horas_5': { message: 'En los casos donde una jornada pueda tener dos tipos de recargo, siempre se pagará el de mayor valor.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'categoria_horas_extras' }], isQuestion: false },
+            'categoria_fechas_pago': { message: 'Has elegido <strong>Fechas y Comprobantes de Pago</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuál es la fecha de pago de sueldos?', nextNode: 'resp_pago_0' }, { text: '¿Cómo recibo mi rol de pagos?', nextNode: 'resp_pago_1' }, { text: 'No entiendo un valor que se refleja en mi rol de pagos, ¿qué debo hacer?', nextNode: 'resp_pago_2' }, { text: '¿Pueden pagar mi sueldo a la cuenta bancaria de un familiar?', nextNode: 'resp_pago_3' }, { text: '‹ Regresar a Nómina', nextNode: 'grupo_nomina' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Nómina', category: 'Fechas y Comprobantes de Pago' },
+            'resp_pago_0': { message: 'Los pagos se realizarán un día antes del 15 o del fin de mes. Si la fecha es un fin de semana, el pago se realizará el viernes.', options: [{ text: '‹ Regresar a Fechas y Comprobantes', nextNode: 'categoria_fechas_pago' }], isQuestion: false },
+            'resp_pago_1': { message: 'Los roles de pago los puede descargar desde su portal de empleados Un Solo Click, en la sección “Nómina”.', options: [{ text: '‹ Regresar a Fechas y Comprobantes', nextNode: 'categoria_fechas_pago' }], isQuestion: false },
+            'resp_pago_2': { message: 'Para cualquier duda de su rol de pago deberá comunicárselo a su jefe directo para que él se pueda contactar con el área responsable.', options: [{ text: '‹ Regresar a Fechas y Comprobantes', nextNode: 'categoria_fechas_pago' }], isQuestion: false },
+            'resp_pago_3': { message: 'No. Si en caso tiene algún problema en su cuenta bancaria, es posible que se habilite el pago de su sueldo mediante cheque, pero esto solo podrá ser hasta por un máximo de 3 meses.', options: [{ text: '‹ Regresar a Fechas y Comprobantes', nextNode: 'categoria_fechas_pago' }], isQuestion: false },
+            'categoria_beneficios_ley': { message: 'Has elegido <strong>Beneficios de Ley</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuándo se paga el décimo tercer sueldo?', nextNode: 'resp_beneficios_0' }, { text: '¿Puedo solicitar la mensualización de mis décimos?', nextNode: 'resp_beneficios_1' }, { text: '¿Cuándo se paga el décimo cuarto sueldo?', nextNode: 'resp_beneficios_2' }, { text: '¿Quiénes reciben utilidades y cuándo se pagan?', nextNode: 'resp_beneficios_3' }, { text: '‹ Regresar a Nómina', nextNode: 'grupo_nomina' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Nómina', category: 'Beneficios de Ley' },
+            'resp_beneficios_0': { message: 'El décimo tercer sueldo se paga de forma acumulada hasta el 24 de diciembre de cada año. El período de cálculo va desde el 1 de diciembre del año anterior hasta el 30 de noviembre del año en curso.', options: [{ text: '‹ Regresar a Beneficios de Ley', nextNode: 'categoria_beneficios_ley' }], isQuestion: false },
+            'resp_beneficios_1': { message: 'Sí, puedes solicitar la mensualización de tus décimos. Debes presentar una solicitud por escrito a Talento Humano durante los primeros 15 días del mes de enero.', options: [{ text: '‹ Regresar a Beneficios de Ley', nextNode: 'categoria_beneficios_ley' }], isQuestion: false },
+            'resp_beneficios_2': { message: 'El décimo cuarto sueldo se paga hasta el 15 de marzo en las regiones Costa e Insular, y hasta el 15 de agosto en la Sierra y Amazonía. Corresponde a un Salario Básico Unificado.', options: [{ text: '‹ Regresar a Beneficios de Ley', nextNode: 'categoria_beneficios_ley' }], isQuestion: false },
+            'resp_beneficios_3': { message: 'Las utilidades se pagan hasta el 15 de abril de cada año. Corresponden al 15% de las utilidades líquidas de la empresa y se reparten entre todos los trabajadores y ex-trabajadores que laboraron durante el año fiscal anterior.', options: [{ text: '‹ Regresar a Beneficios de Ley', nextNode: 'categoria_beneficios_ley' }], isQuestion: false },
+            'categoria_aportes_iess': { message: 'Has elegido <strong>Aportes al IESS y Fondos de Reserva</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuál es el porcentaje de aporte personal al IESS?', nextNode: 'resp_iess_0' }, { text: '¿Cómo puedo saber si mis aportes al IESS están al día?', nextNode: 'resp_iess_1' }, { text: '¿Desde cuándo tengo derecho a recibir fondos de reserva?', nextNode: 'resp_iess_2' }, { text: '¿Cómo puedo solicitar la acumulación o mensualización de mis fondos de reserva?', nextNode: 'resp_iess_3' }, { text: '‹ Regresar a Nómina', nextNode: 'grupo_nomina' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Nómina', category: 'Aportes al IESS y Fondos de Reserva' },
+            'resp_iess_0': { message: 'El aporte personal al IESS que se descuenta de tu sueldo es del 9.45%.', options: [{ text: '‹ Regresar a Aportes al IESS', nextNode: 'categoria_aportes_iess' }], isQuestion: false },
+            'resp_iess_1': { message: 'Puedes verificar tu historial de aportes directamente en la página web del IESS con tu número de cédula y clave personal.', options: [{ text: '‹ Regresar a Aportes al IESS', nextNode: 'categoria_aportes_iess' }], isQuestion: false },
+            'resp_iess_2': { message: 'Tienes derecho a los fondos de reserva después de cumplir tu primer año de trabajo. Corresponde al 8.33% de tu remuneración.', options: [{ text: '‹ Regresar a Aportes al IESS', nextNode: 'categoria_aportes_iess' }], isQuestion: false },
+            'resp_iess_3': { message: 'Puedes solicitar la mensualización de tus fondos de reserva directamente en la página del IESS. Si no realizas la solicitud, se acumularán automáticamente en tu cuenta individual.', options: [{ text: '‹ Regresar a Aportes al IESS', nextNode: 'categoria_aportes_iess' }], isQuestion: false },
+            'categoria_impuesto_renta': { message: 'Has elegido <strong>Impuesto a la Renta</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Qué es la proyección de gastos personales?', nextNode: 'resp_renta_0' }, { text: '¿Cómo sé si debo pagar impuesto a la renta?', nextNode: 'resp_renta_1' }, { text: '¿Dónde puedo descargar mi comprobante de retención?', nextNode: 'resp_renta_2' }, { text: '‹ Regresar a Nómina', nextNode: 'grupo_nomina' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Nómina', category: 'Impuesto a la Renta' },
+            'resp_renta_0': { message: 'Es un formulario que presentas en enero para proyectar tus gastos personales (vivienda, salud, educación, etc.). Esto permite reducir la base sobre la cual se calcula tu impuesto a la renta.', options: [{ text: '‹ Regresar a Impuesto a la Renta', nextNode: 'categoria_impuesto_renta' }], isQuestion: false },
+            'resp_renta_1': { message: 'Debes pagar impuesto a la renta si tus ingresos anuales superan la base imponible establecida por el SRI cada año. El descuento se realiza mensualmente en tu rol de pagos.', options: [{ text: '‹ Regresar a Impuesto a la Renta', nextNode: 'categoria_impuesto_renta' }], isQuestion: false },
+            'resp_renta_2': { message: 'Puedes descargar tu comprobante de retención (Formulario 107) desde el portal de empleados "Un Solo Click" o solicitarlo directamente al área de Nómina.', options: [{ text: '‹ Regresar a Impuesto a la Renta', nextNode: 'categoria_impuesto_renta' }], isQuestion: false },
+            'categoria_anticipos': { message: 'Has elegido <strong>Anticipos de Sueldo</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Puedo solicitar un anticipo de sueldo?', nextNode: 'resp_anticipo_0' }, { text: '¿Cuál es el proceso y el monto máximo para solicitar un anticipo?', nextNode: 'resp_anticipo_1' }, { text: '¿Cuándo se descuenta el anticipo solicitado?', nextNode: 'resp_anticipo_2' }, { text: '‹ Regresar a Nómina', nextNode: 'grupo_nomina' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Nómina', category: 'Anticipos de Sueldo' },
+            'resp_anticipo_0': { message: 'Sí, puedes solicitar anticipos de sueldo. Debes llenar el formulario correspondiente y obtener la aprobación de tu jefatura directa.', options: [{ text: '‹ Regresar a Anticipos', nextNode: 'categoria_anticipos' }], isQuestion: false },
+            'resp_anticipo_1': { message: 'El monto máximo del anticipo es hasta el 40% de tu remuneración mensual. La solicitud se procesa y se paga junto con la quincena o fin de mes, dependiendo de la fecha de corte.', options: [{ text: '‹ Regresar a Anticipos', nextNode: 'categoria_anticipos' }], isQuestion: false },
+            'resp_anticipo_2': { message: 'El anticipo se descuenta en su totalidad en el pago de fin de mes correspondiente al mes en que lo solicitaste.', options: [{ text: '‹ Regresar a Anticipos', nextNode: 'categoria_anticipos' }], isQuestion: false },
+            'categoria_liquidacion': { message: 'Has elegido <strong>Liquidación y Finiquito</strong>. ¿Cuál es tu consulta?', options: [ { text: 'Si renuncio, ¿en qué plazo recibo el pago de mi liquidación?', nextNode: 'resp_liquidacion_0' }, { text: '¿Qué valores se incluyen en el cálculo del acta de finiquito?', nextNode: 'resp_liquidacion_1' }, { text: '¿Cómo se calculan las vacaciones no gozadas en una liquidación?', nextNode: 'resp_liquidacion_2' }, { text: '‹ Regresar a Nómina', nextNode: 'grupo_nomina' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Nómina', category: 'Liquidación y Finiquito (Salida del Colaborador)' },
+            'resp_liquidacion_0': { message: 'Recibirás tu liquidación dentro de los 15 días posteriores a tu último día de trabajo, mediante transferencia o cheque.', options: [{ text: '‹ Regresar a Liquidación', nextNode: 'categoria_liquidacion' }], isQuestion: false },
+            'resp_liquidacion_1': { message: 'El finiquito incluye los proporcionales de tus décimos, vacaciones no gozadas y cualquier otro valor pendiente de pago.', options: [{ text: '‹ Regresar a Liquidación', nextNode: 'categoria_liquidacion' }], isQuestion: false },
+            'resp_liquidacion_2': { message: 'Se toma el valor de tu última remuneración, se divide para 240 para obtener el valor por hora, y este se multiplica por el número de horas de vacaciones que no hayas tomado.', options: [{ text: '‹ Regresar a Liquidación', nextNode: 'categoria_liquidacion' }], isQuestion: false },
+            'categoria_vacaciones': { message: 'Has elegido <strong>Vacaciones</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuántos días de vacaciones anuales le corresponden a un colaborador?', nextNode: 'resp_vacaciones_0' }, { text: '¿Qué sucede si un colaborador se retira de la compañía habiendo tomado más días de vacaciones de los que le correspondían?', nextNode: 'resp_vacaciones_1' }, { text: '¿Se pueden compensar las vacaciones en dinero?', nextNode: 'resp_vacaciones_2' }, { text: '‹ Regresar a Nómina', nextNode: 'grupo_nomina' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Nómina', category: 'Vacaciones' },
+            'resp_vacaciones_0': { message: 'El colaborador que trabaje el año calendario completo tiene derecho a gozar anualmente de un periodo ininterrumpido de 15 días de vacaciones, incluyendo días no laborables. Adicionalmente, si ha prestado servicios por más de 5 años en la compañía, tendrá derecho a un día adicional por cada año excedente, con un tope máximo de 15 días adicionales.', options: [{ text: '‹ Regresar a Vacaciones', nextNode: 'categoria_vacaciones' }], isQuestion: false },
+            'resp_vacaciones_1': { message: 'En este caso, se procederá a descontar de su liquidación de haberes el valor correspondiente a los días que tomó en exceso.', options: [{ text: '‹ Regresar a Vacaciones', nextNode: 'categoria_vacaciones' }], isQuestion: false },
+            'resp_vacaciones_2': { message: 'Por ninguna razón la compañía compensará en dinero las vacaciones de los colaboradores, excepto lo estipulado en el Código del Trabajo.', options: [{ text: '‹ Regresar a Vacaciones', nextNode: 'categoria_vacaciones' }], isQuestion: false },
 
-            // --- ÁREA: SELECCIÓN ---
-            'seleccion': {
-                message: 'Entendido. Has elegido el área de <strong>Selección</strong>. ¿Sobre qué grupo de temas necesitas información?',
-                options: [
-                    { text: 'Postulación', nextNode: 'postulacion' }, { text: 'Personal', nextNode: 'personal' }, { text: '‹ Regresar al menú anterior', nextNode: 'root' },
-                ],
-                isQuestion: true
-            },
-            'postulacion': {
-                message: 'Has elegido <strong>Postulación</strong>. ¿Cuál es tu pregunta?',
-                options: [
-                    { text: '¿Cómo puedo referir a alguien?', nextNode: 'respuestaReferir' }, { text: '¿Dónde puedo postular?', nextNode: 'respuestaPostular' }, { text: '‹ Regresar al menú anterior', nextNode: 'seleccion' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
-                ],
-                isQuestion: true
-            },
-            'personal': {
-                message: 'Has elegido <strong>Personal</strong>. ¿Cuál es tu pregunta?',
-                options: [
-                    { text: '¿Cómo valido horas de pasantía?', nextNode: 'respuestaPasantia' }, { text: '¿Cómo actualizo mi información?', nextNode: 'respuestaActualizarInfo' }, { text: '‹ Regresar al menú anterior', nextNode: 'seleccion' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
-                ],
-                isQuestion: true
-            },
-            'respuestaReferir': { message: 'Para referir a alguien, debes seguir el proceso establecido en el portal del empleado o comunicarte directamente con el área de Selección para obtener el formulario correspondiente.', options: [{ text: '‹ Regresar a Postulación', nextNode: 'postulacion' }], isQuestion: false },
-            'respuestaPostular': { message: 'Puedes encontrar todas nuestras vacantes abiertas y postular a través de nuestro portal de empleos oficial o en las plataformas de reclutamiento asociadas.', options: [{ text: '‹ Regresar a Postulación', nextNode: 'postulacion' }], isQuestion: false },
-            'respuestaPasantia': { message: 'Para validar horas de pasantía con tu experiencia laboral, necesitas presentar un certificado de tus pasantías junto con una solicitud formal al departamento de Talento Humano para su revisión y aprobación.', options: [{ text: '‹ Regresar a Personal', nextNode: 'personal' }], isQuestion: false },
-            'respuestaActualizarInfo': { message: 'Puedes actualizar tu información personal (dirección, estado civil, etc.) directamente en el portal del empleado o solicitando el formulario de actualización de datos a Talento Humano.', options: [{ text: '‹ Regresar a Personal', nextNode: 'personal' }], isQuestion: false },
-
-            // --- ÁREA: TRABAJO SOCIAL ---
-            'trabajoSocial': {
-                message: 'Entendido. Has elegido el área de <strong>Trabajo Social</strong>. ¿Sobre qué grupo de temas necesitas información?',
-                options: [
-                    { text: 'Uniformes', nextNode: 'uniformes' }, { text: 'Charlas', nextNode: 'charlas' }, { text: 'Denuncias', nextNode: 'denuncias' }, { text: 'Permisos Médicos', nextNode: 'permisosMedicos' }, { text: 'Subsidios', nextNode: 'subsidios' }, { text: 'Licencias', nextNode: 'licencias' }, { text: 'Préstamos', nextNode: 'prestamos' }, { text: '‹ Regresar al menú anterior', nextNode: 'root' },
-                ],
-                isQuestion: true
-            },
-            'uniformes': { message: 'Has elegido <strong>Uniformes</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuántas dotaciones se reciben al año?', nextNode: 'respDotaciones' }, { text: '¿Cómo reporto un daño en mi uniforme?', nextNode: 'respReportarDano' }, { text: '¿Qué hago si mi uniforme no es mi talla?', nextNode: 'respTallaIncorrecta' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' }, ], isQuestion: true },
-            'respDotaciones': { message: 'Se reciben <strong>dos dotaciones</strong> de uniforme al año.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'uniformes' }], isQuestion: false },
-            'respReportarDano': { message: 'Debes reportar el daño a tu jefe directo. Si es por robo, es indispensable presentar la denuncia correspondiente.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'uniformes' }], isQuestion: false },
-            'respTallaIncorrecta': { message: 'Debes contactarte con el <strong>Trabajador Social</strong> de tu zona para gestionar el cambio.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'uniformes' }], isQuestion: false },
-            'charlas': { message: 'Has elegido <strong>Charlas</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo participar en las charlas?', nextNode: 'respParticiparCharlas' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' }, ], isQuestion: true },
-            'respParticiparCharlas': { message: 'Tenemos un calendario anual de charlas. Puedes consultar las fechas y temas con tu jefe inmediato o con el trabajador social de tu zona.', options: [{ text: '‹ Regresar a Charlas', nextNode: 'charlas' }], isQuestion: false },
-            'denuncias': { message: 'Has elegido <strong>Denuncias</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo realizar una denuncia?', nextNode: 'respRealizarDenuncia' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' }, ], isQuestion: true },
-            'respRealizarDenuncia': { message: 'Puedes realizar una denuncia de forma confidencial a través de los siguientes canales:<br><strong>Web:</strong> <a href="https://www.lineaeticagrupoprimax.com/" target="_blank" class="text-blue-500 hover:underline">lineaeticagrupoprimax.com</a><br><strong>Email:</strong> reportes@lineaeticagrupoprimax.com<br><strong>WhatsApp:</strong> (+51) 989043514', options: [{ text: '‹ Regresar a Denuncias', nextNode: 'denuncias' }], isQuestion: false },
-            'permisosMedicos': { message: 'Has elegido <strong>Permisos Médicos</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Plazo para entregar permiso médico?', nextNode: 'respPlazoPermiso' }, { text: '¿Qué pasa si no tengo derecho al IESS?', nextNode: 'respSinIESS' }, { text: '¿Cómo revalidar descansos médicos?', nextNode: 'respRevalidarDescanso' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' }, ], isQuestion: true },
-            'respPlazoPermiso': { message: 'Tienes un plazo de <strong>3 días</strong> para poder presentar un certificado médico y justificar tu ausencia.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'permisosMedicos' }], isQuestion: false },
-            'respSinIESS': { message: 'Si no tienes derecho al IESS, puedes acercarte a centros médicos particulares, Hospitales del Ministerio de Salud Pública o el Dispensario Médico de Atimasa.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'permisosMedicos' }], isQuestion: false },
-            'respRevalidarDescanso': { message: 'Puede ser de manera <strong>online</strong> si el certificado tiene firma digital, o de manera <strong>presencial</strong> en un Hospital del IESS si tiene firma manual.', options: [{ text: '‹ Regresar a Permisos Médicos', nextNode: 'permisosMedicos' }], isQuestion: false },
-            'subsidios': { message: 'Has elegido <strong>Subsidios</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo se calcula el subsidio?', nextNode: 'respCalculoSubsidio' }, { text: '¿Tiempo máximo de subsidio?', nextNode: 'respMaxSubsidio' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' }, ], isQuestion: true },
-            'respCalculoSubsidio': { message: 'El subsidio por descanso médico se calcula así:<br>- Los 3 primeros días no son remunerados.<br>- Desde el día 4 hasta el día 21, la empresa paga el 50% del sueldo.<br>- A partir del día 22, el IESS paga el 75% y la empresa el 25%.', options: [{ text: '‹ Regresar a Subsidios', nextNode: 'subsidios' }], isQuestion: false },
-            'respMaxSubsidio': { message: 'El tiempo máximo de subsidio por descanso médico es de <strong>hasta 6 meses</strong>.', options: [{ text: '‹ Regresar a Subsidios', nextNode: 'subsidios' }], isQuestion: false },
-            'licencias': { message: 'Has elegido <strong>Licencias</strong>. ¿Qué tipo de licencia te interesa?', options: [ { text: 'Maternidad', nextNode: 'licMaternidad' }, { text: 'Paternidad', nextNode: 'licPaternidad' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' }, ], isQuestion: true },
-            'licMaternidad': { message: 'Consultas sobre <strong>Licencia de Maternidad</strong>:', options: [ { text: '¿Cuántos días se otorgan?', nextNode: 'respDiasMaternidad' }, { text: '¿Documentos y plazos?', nextNode: 'respDocsMaternidad' }, { text: '¿Cómo se calcula el sueldo?', nextNode: 'respSueldoMaternidad' }, { text: '‹ Regresar a Licencias', nextNode: 'licencias' }, ], isQuestion: true },
-            'respDiasMaternidad': { message: 'Se otorgan <strong>84 días consecutivos</strong> contados desde el nacimiento del bebé. En caso de partos múltiples, se añaden 10 días adicionales.', options: [{ text: '‹ Regresar a Licencia de Maternidad', nextNode: 'licMaternidad' }], isQuestion: false },
-            'respDocsMaternidad': { message: 'Debes presentar el descanso médico por los 84 días (tienes 3 días para justificarlo desde el inicio de tu licencia) y posteriormente, el certificado de nacimiento del bebé.', options: [{ text: '‹ Regresar a Licencia de Maternidad', nextNode: 'licMaternidad' }], isQuestion: false },
-            'respSueldoMaternidad': { message: 'Recibes el 25% por parte de la empresa y el 75% por parte del IESS. Si no tienes derecho al IESS, la empresa cubre el 100%.', options: [{ text: '‹ Regresar a Licencia de Maternidad', nextNode: 'licMaternidad' }], isQuestion: false },
-            'licPaternidad': { message: 'Consultas sobre <strong>Licencia de Paternidad</strong>:', options: [ { text: '¿Cuántos días se otorgan?', nextNode: 'respDiasPaternidad' }, { text: '¿Documentos y plazos?', nextNode: 'respDocsPaternidad' }, { text: '¿Cómo se calcula el sueldo?', nextNode: 'respSueldoPaternidad' }, { text: '‹ Regresar a Licencias', nextNode: 'licencias' }, ], isQuestion: true },
-            'respDiasPaternidad': { message: 'Se otorgan <strong>15 días</strong> si el parto es normal y <strong>20 días</strong> si es por cesárea o parto múltiple. Hay días adicionales por bebés prematuros o complicaciones.', options: [{ text: '‹ Regresar a Licencia de Paternidad', nextNode: 'licPaternidad' }], isQuestion: false },
-            'respDocsPaternidad': { message: 'Debes presentar el Certificado de nacido vivo y la Partida de nacimiento, máximo hasta el tercer día del inicio de tu licencia de paternidad.', options: [{ text: '‹ Regresar a Licencia de Paternidad', nextNode: 'licPaternidad' }], isQuestion: false },
-            'respSueldoPaternidad': { message: 'Recibirás por parte de la empresa el <strong>100% de tu sueldo</strong> durante los días de tu licencia de paternidad.', options: [{ text: '‹ Regresar a Licencia de Paternidad', nextNode: 'licPaternidad' }], isQuestion: false },
-            'prestamos': { message: 'Has elegido <strong>Préstamos</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Motivos para solicitar un préstamo?', nextNode: 'respMotivosPrestamo' }, { text: '¿Documentos necesarios?', nextNode: 'respDocsPrestamo' }, { text: '¿Requisitos para solicitar?', nextNode: 'respRequisitosPrestamo' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'trabajoSocial' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' }, ], isQuestion: true },
-            'respMotivosPrestamo': { message: 'Los préstamos se otorgan por razones de necesidad o emergencia en las siguientes áreas: <strong>Salud, mejoramiento de vivienda y educación</strong>.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'prestamos' }], isQuestion: false },
-            'respDocsPrestamo': { message: 'Debes presentar soportes según el motivo: receta médica, proformas de materiales, fotos del mejoramiento, etc. Los documentos deben estar a nombre del trabajador y con fecha actualizada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'prestamos' }], isQuestion: false },
-            'respRequisitosPrestamo': { message: 'Puedes solicitar un préstamo luego de cumplir <strong>un año de trabajo</strong> en la empresa, y se aprueba en casos de alguna emergencia o necesidad comprobada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'prestamos' }], isQuestion: false },
-            
-            // --- ÁREA: NÓMINA (ACTUALIZADA) ---
-            'nomina': {
-                message: 'Has elegido el área de <strong>Nómina</strong>. ¿Sobre qué grupo de temas necesitas información?',
-                options: [
-                    { text: 'Horas Extras', nextNode: 'nomina_horasExtras' },
-                    { text: 'Fechas y Comprobantes de Pago', nextNode: 'nomina_fechasComprobantes' },
-                    { text: 'Beneficios de Ley', nextNode: 'nomina_beneficiosLey' },
-                    { text: 'Aportes al IESS y Fondos', nextNode: 'nomina_aportes' },
-                    { text: 'Impuesto a la Renta', nextNode: 'nomina_impuestoRenta' },
-                    { text: 'Anticipos de Sueldo', nextNode: 'nomina_anticipos' },
-                    { text: 'Liquidación y Finiquito', nextNode: 'nomina_liquidacion' },
-                    { text: '‹ Regresar al menú anterior', nextNode: 'root' },
-                ],
-                isQuestion: true
-            },
-            // Grupo Horas Extras
-            'nomina_horasExtras': {
-                message: 'Has elegido <strong>Horas Extras</strong>. ¿Cuál es tu consulta?',
-                options: [
-                    { text: '¿Cómo se define la jornada ordinaria?', nextNode: 'respNominaJornadaOrdinaria' }, { text: '¿Qué es la jornada nocturna?', nextNode: 'respNominaJornadaNocturna' }, { text: '¿Qué son las horas suplementarias?', nextNode: 'respNominaHorasSuplementarias' }, { text: '¿Qué son las horas extraordinarias?', nextNode: 'respNominaHorasExtraordinarias' }, { text: '¿Cómo se calcula el valor de mi hora?', nextNode: 'respNominaCalculoHora' }, { text: '¿Qué pasa si aplican dos recargos?', nextNode: 'respNominaDobleRecargo' }, { text: '‹ Regresar a Nómina', nextNode: 'nomina' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
-                ],
-                isQuestion: true
-            },
-            'respNominaJornadaOrdinaria': { message: 'La jornada máxima ordinaria de trabajo es de 8 horas diarias.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'nomina_horasExtras' }], isQuestion: false },
-            'respNominaJornadaNocturna': { message: 'La jornada nocturna corresponde al trabajo realizado entre las 19:00 y las 06:00 del día siguiente. Este horario tiene una remuneración con un recargo del 25%.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'nomina_horasExtras' }], isQuestion: false },
-            'respNominaHorasSuplementarias': { message: 'Son las horas trabajadas a continuación de la jornada ordinaria. El pago varía según el horario:<br>- Las que se laboran entre las 06:00 A.M. y las 00:00 A.M. tienen un recargo del 50%.<br>- Las que se laboran entre las 00:00 A.M. y las 06:00 A.M. tienen un recargo del 100%.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'nomina_horasExtras' }], isQuestion: false },
-            'respNominaHorasExtraordinarias': { message: 'Son las horas trabajadas durante los días de descanso obligatorio o feriados establecidos en el Código del Trabajo. Estas horas se pagan con un recargo del 100% sobre el valor de la jornada diurna.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'nomina_horasExtras' }], isQuestion: false },
-            'respNominaCalculoHora': { message: 'El valor de la hora de trabajo se obtiene al dividir el sueldo mensual para 240 horas.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'nomina_horasExtras' }], isQuestion: false },
-            'respNominaDobleRecargo': { message: 'En los casos donde una jornada pueda tener dos tipos de recargo, siempre se pagará el de mayor valor.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'nomina_horasExtras' }], isQuestion: false },
-            // Grupo Fechas y Comprobantes
-            'nomina_fechasComprobantes': {
-                message: 'Has elegido <strong>Fechas y Comprobantes de Pago</strong>. ¿Cuál es tu consulta?',
-                options: [
-                    { text: '¿Cuándo es la fecha de pago?', nextNode: 'respFechaPago' }, { text: '¿Cómo recibo mi rol de pagos?', nextNode: 'respRolPagos' }, { text: 'No entiendo un valor en mi rol', nextNode: 'respDudaRol' }, { text: '¿Pueden pagar a cuenta de un familiar?', nextNode: 'respPagoFamiliar' }, { text: '‹ Regresar a Nómina', nextNode: 'nomina' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
-                ],
-                isQuestion: true
-            },
-            'respFechaPago': { message: 'Los pagos se realizarán un día antes del 15 o del fin de mes. Si la fecha es un fin de semana, el pago se realizará el viernes.', options: [{ text: '‹ Regresar', nextNode: 'nomina_fechasComprobantes' }], isQuestion: false },
-            'respRolPagos': { message: 'Los roles de pago los puede descargar desde su portal de empleados Un Solo Click, en la sección “Nómina”.', options: [{ text: '‹ Regresar', nextNode: 'nomina_fechasComprobantes' }], isQuestion: false },
-            'respDudaRol': { message: 'Para cualquier duda de su rol de pago deberá comunicárselo a su jefe directo para que él se pueda contactar con el área responsable.', options: [{ text: '‹ Regresar', nextNode: 'nomina_fechasComprobantes' }], isQuestion: false },
-            'respPagoFamiliar': { message: 'No. Si en caso tiene algún problema en su cuenta bancaria, es posible que se habilite el pago de su sueldo mediante cheque, pero esto solo podrá ser hasta por un máximo de 3 meses.', options: [{ text: '‹ Regresar', nextNode: 'nomina_fechasComprobantes' }], isQuestion: false },
-            // Grupo Beneficios de Ley
-            'nomina_beneficiosLey': {
-                message: 'Has elegido <strong>Beneficios de Ley</strong>. ¿Cuál es tu consulta?',
-                options: [
-                    { text: '¿Cuándo pagan el décimo tercer sueldo?', nextNode: 'respDecimoTercer' }, { text: '¿Puedo mensualizar mis décimos?', nextNode: 'respMensualizarDecimos' }, { text: '¿Cuándo pagan el décimo cuarto sueldo?', nextNode: 'respDecimoCuarto' }, { text: '¿Quiénes reciben utilidades y cuándo?', nextNode: 'respUtilidades' }, { text: '‹ Regresar a Nómina', nextNode: 'nomina' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
-                ],
-                isQuestion: true
-            },
-            'respDecimoTercer': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_beneficiosLey' }], isQuestion: false },
-            'respMensualizarDecimos': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_beneficiosLey' }], isQuestion: false },
-            'respDecimoCuarto': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_beneficiosLey' }], isQuestion: false },
-            'respUtilidades': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_beneficiosLey' }], isQuestion: false },
-            // Grupo Aportes al IESS
-            'nomina_aportes': {
-                message: 'Has elegido <strong>Aportes al IESS y Fondos de Reserva</strong>. ¿Cuál es tu consulta?',
-                options: [
-                    { text: '¿Cuál es mi porcentaje de aporte al IESS?', nextNode: 'respAporteIESS' }, { text: '¿Cómo sé si mis aportes están al día?', nextNode: 'respAportesAlDia' }, { text: '¿Desde cuándo recibo fondos de reserva?', nextNode: 'respFondosReserva' }, { text: '¿Cómo acumulo/mensualizo mis fondos?', nextNode: 'respManejoFondos' }, { text: '‹ Regresar a Nómina', nextNode: 'nomina' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
-                ],
-                isQuestion: true
-            },
-            'respAporteIESS': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_aportes' }], isQuestion: false },
-            'respAportesAlDia': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_aportes' }], isQuestion: false },
-            'respFondosReserva': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_aportes' }], isQuestion: false },
-            'respManejoFondos': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_aportes' }], isQuestion: false },
-            // Grupo Impuesto a la Renta
-            'nomina_impuestoRenta': {
-                message: 'Has elegido <strong>Impuesto a la Renta</strong>. ¿Cuál es tu consulta?',
-                options: [
-                    { text: '¿Qué es la proyección de gastos personales?', nextNode: 'respProyeccionGastos' }, { text: '¿Cómo sé si debo pagar impuesto?', nextNode: 'respPagoImpuesto' }, { text: '¿Dónde descargo mi comprobante?', nextNode: 'respComprobanteRetencion' }, { text: '‹ Regresar a Nómina', nextNode: 'nomina' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
-                ],
-                isQuestion: true
-            },
-            'respProyeccionGastos': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_impuestoRenta' }], isQuestion: false },
-            'respPagoImpuesto': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_impuestoRenta' }], isQuestion: false },
-            'respComprobanteRetencion': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_impuestoRenta' }], isQuestion: false },
-            // Grupo Anticipos
-            'nomina_anticipos': {
-                message: 'Has elegido <strong>Anticipos de Sueldo</strong>. ¿Cuál es tu consulta?',
-                options: [
-                    { text: '¿Puedo solicitar un anticipo?', nextNode: 'respSolicitarAnticipo' }, { text: '¿Cuál es el proceso y monto máximo?', nextNode: 'respProcesoAnticipo' }, { text: '¿Cuándo se descuenta el anticipo?', nextNode: 'respDescuentoAnticipo' }, { text: '‹ Regresar a Nómina', nextNode: 'nomina' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
-                ],
-                isQuestion: true
-            },
-            'respSolicitarAnticipo': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_anticipos' }], isQuestion: false },
-            'respProcesoAnticipo': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_anticipos' }], isQuestion: false },
-            'respDescuentoAnticipo': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_anticipos' }], isQuestion: false },
-            // Grupo Liquidación
-            'nomina_liquidacion': {
-                message: 'Has elegido <strong>Liquidación y Finiquito</strong>. ¿Cuál es tu consulta?',
-                options: [
-                    { text: 'Si renuncio, ¿cuándo recibo mi liquidación?', nextNode: 'respPagoLiquidacion' }, { text: '¿Qué valores incluye el finiquito?', nextNode: 'respValoresFiniquito' }, { text: '¿Cómo se calculan las vacaciones no gozadas?', nextNode: 'respVacacionesNoGozadas' }, { text: '‹ Regresar a Nómina', nextNode: 'nomina' }, { text: 'Otra consulta (Contactar a un humano)', nextNode: 'contact_askName' },
-                ],
-                isQuestion: true
-            },
-            'respPagoLiquidacion': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_liquidacion' }], isQuestion: false },
-            'respValoresFiniquito': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_liquidacion' }], isQuestion: false },
-            'respVacacionesNoGozadas': { message: 'La información estará disponible próximamente.', options: [{ text: '‹ Regresar', nextNode: 'nomina_liquidacion' }], isQuestion: false },
-
-            // --- NODOS PARA PREGUNTA ABIERTA (FLUJO MODIFICADO) ---
-            'contact_askName': {
-                message: 'Entendido. Por favor, escribe tu <strong>nombre completo</strong>.',
-                isInputNode: true,
-                inputKey: 'name',
-                nextNode: 'contact_askArea'
-            },
-            'contact_askArea': {
-                message: 'Gracias. Ahora, por favor, indica tu <strong>área o estación</strong>.',
-                isInputNode: true,
-                inputKey: 'area',
-                nextNode: 'contact_askQuestion'
-            },
-            'contact_askQuestion': {
-                message: 'Perfecto. Finalmente, escribe tu consulta (<strong>máximo 30 caracteres</strong>).',
-                isInputNode: true,
-                inputKey: 'question',
-                maxLength: 30,
-                nextNode: 'contact_compose'
-            },
+            'contact_askName': { message: 'Entendido. Para comunicarte con un asesor, por favor, escribe tu <strong>nombre completo</strong>.', isInputNode: true, inputKey: 'name', nextNode: 'contact_askArea' },
+            'contact_askArea': { message: 'Gracias. Ahora, por favor, indica tu <strong>área o estación</strong>.', isInputNode: true, inputKey: 'area', nextNode: 'contact_askQuestion' },
+            'contact_askQuestion': { message: 'Perfecto. Finalmente, escribe tu consulta de forma breve.', isInputNode: true, inputKey: 'question', maxLength: 120, nextNode: 'contact_compose' },
         };
 
         // --- Lógica del Chatbot ---
         const messagesContainer = document.getElementById('chat-messages');
         const optionsContainer = document.getElementById('chat-options');
         let currentNodeKey = 'root';
-        let currentAreaKey = ''; // NUEVO: Guarda el área seleccionada (seleccion, trabajoSocial, nomina)
-        let contactInfo = {}; // Objeto para guardar la información del usuario
+        let contactInfo = {};
+
+        function logInteraction(logData) {
+            console.log("Intentando registrar:", logData);
+            if (!LOGGING_URL || LOGGING_URL.includes('AQUI')) {
+                console.warn("URL de logging no configurada.");
+                return;
+            }
+            fetch(LOGGING_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(logData),
+                mode: 'cors'
+            })
+            .then(response => response.json())
+            .then(data => console.log("Respuesta del script de logging:", data))
+            .catch(error => console.error("Error al registrar la interacción:", error));
+        }
 
         function renderNode(nodeKey) {
             const node = chatTree[nodeKey];
@@ -282,13 +156,7 @@
 
             const botMessageDiv = document.createElement('div');
             botMessageDiv.className = 'flex items-start gap-3';
-            botMessageDiv.innerHTML = `
-                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg>
-                </div>
-                <div class="bg-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-xs md:max-w-md shadow">
-                    <p class="text-sm">${node.message}</p>
-                </div>`;
+            botMessageDiv.innerHTML = `<div class="w-8 h-8 bg-[#1D23AF] rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg></div><div class="bg-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-xs md:max-w-md shadow"><p class="text-sm">${node.message}</p></div>`;
             messagesContainer.appendChild(botMessageDiv);
 
             optionsContainer.innerHTML = '';
@@ -306,8 +174,8 @@
             node.options.forEach(option => {
                 const button = document.createElement('button');
                 button.innerHTML = option.text;
-                button.className = 'w-full text-left p-3 bg-white border border-gray-300 rounded-lg text-blue-600 font-semibold chat-option-button shadow-sm';
-                button.onclick = () => handleOptionClick(option, node.isQuestion);
+                button.className = 'w-full text-left p-3 bg-white border border-gray-300 rounded-lg text-[#1D23AF] font-semibold chat-option-button shadow-sm';
+                button.onclick = () => handleOptionClick(option, node);
                 optionsWrapper.appendChild(button);
             });
             optionsContainer.appendChild(optionsWrapper);
@@ -316,20 +184,17 @@
         function renderInputNode(node) {
             const inputWrapper = document.createElement('div');
             inputWrapper.className = 'space-y-3';
-            
             const textInput = document.createElement('input');
             textInput.type = 'text';
             textInput.id = 'user-input-field';
-            textInput.className = 'w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition';
+            textInput.className = 'w-full p-3 border border-gray-300 rounded-lg focus:ring-[#F75701] focus:border-[#F75701] transition';
             textInput.placeholder = 'Escribe aquí...';
-            if (node.maxLength) {
-                textInput.maxLength = node.maxLength;
-            }
+            if (node.maxLength) { textInput.maxLength = node.maxLength; }
             setTimeout(() => textInput.focus(), 100);
 
             const submitButton = document.createElement('button');
             submitButton.innerHTML = node.nextNode === 'contact_compose' ? 'Enviar por WhatsApp' : 'Siguiente';
-            submitButton.className = 'w-full p-3 bg-blue-600 text-white font-semibold rounded-lg chat-option-button shadow-sm';
+            submitButton.className = 'w-full p-3 bg-[#1D23AF] text-white font-semibold rounded-lg chat-option-button shadow-sm';
             
             submitButton.onclick = () => {
                 const userInput = textInput.value;
@@ -339,14 +204,7 @@
                 }
                 handleInputSubmit(userInput, node);
             };
-
-            textInput.onkeydown = (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    submitButton.click();
-                }
-            };
-
+            textInput.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); submitButton.click(); } };
             inputWrapper.appendChild(textInput);
             inputWrapper.appendChild(submitButton);
             optionsContainer.appendChild(inputWrapper);
@@ -356,7 +214,7 @@
             contactInfo[node.inputKey] = value;
             const userMessageDiv = document.createElement('div');
             userMessageDiv.className = 'flex items-start gap-3 justify-end';
-            userMessageDiv.innerHTML = `<div class="bg-blue-600 text-white p-3 rounded-lg rounded-br-none max-w-xs md:max-w-md shadow"><p class="text-sm">${value}</p></div>`;
+            userMessageDiv.innerHTML = `<div class="bg-[#1D23AF] text-white p-3 rounded-lg rounded-br-none max-w-xs md:max-w-md shadow"><p class="text-sm">${value}</p></div>`;
             messagesContainer.appendChild(userMessageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
@@ -373,53 +231,64 @@
         function composeAndSendWhatsApp() {
             const botConfirmDiv = document.createElement('div');
             botConfirmDiv.className = 'flex items-start gap-3';
-            botConfirmDiv.innerHTML = `
-                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg>
-                </div>
-                <div class="bg-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-xs md:max-w-md shadow">
-                    <p class="text-sm">¡Gracias! Ahora se abrirá WhatsApp con tu pregunta lista para ser enviada. Por favor, presiona "Enviar".</p>
-                </div>`;
+            botConfirmDiv.innerHTML = `<div class="w-8 h-8 bg-[#1D23AF] rounded-full flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-3.084A5 5 0 0010 11z" clip-rule="evenodd" /></svg></div><div class="bg-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-xs md:max-w-md shadow"><p class="text-sm">¡Gracias! Se abrirá WhatsApp para que envíes tu consulta al asesor Eduardo Rodríguez. Por favor, presiona "Enviar".</p></div>`;
             messagesContainer.appendChild(botConfirmDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             optionsContainer.innerHTML = '';
 
-            const finalMessage = `Hola mi nombre es '${contactInfo.name}' y soy de '${contactInfo.area}' y tengo la siguiente consulta:\n"${contactInfo.question}"`;
+            const finalMessage = `Hola, mi nombre es '${contactInfo.name}' del área/estación '${contactInfo.area}'. Tengo la siguiente consulta:\n"${contactInfo.question}"`;
             const text = encodeURIComponent(finalMessage);
+            window.open(`https://wa.me/${asesorPhoneNumber}?text=${text}`, '_blank');
             
-            // --- LÓGICA DINÁMICA PARA OBTENER EL NÚMERO ---
-            const phoneNumber = phoneNumbers[currentAreaKey] || phoneNumbers.nomina; // Usa el de nómina como default si algo falla
-            
-            window.location.href = `https://wa.me/${phoneNumber}?text=${text}`;
-            
+            // Log del evento de contacto con el asesor
+            logInteraction({
+                isAdvisorContact: true,
+                grupo: contactInfo.sourceGrupo,
+                category: contactInfo.sourceCategory,
+                userName: contactInfo.name,
+                userArea: contactInfo.area,
+                userQuestion: contactInfo.question
+            });
+
             setTimeout(() => {
                 const backToMenuButton = document.createElement('button');
                 backToMenuButton.innerHTML = '‹ Volver al menú principal';
-                backToMenuButton.className = 'w-full text-left p-3 bg-white border border-gray-300 rounded-lg text-blue-600 font-semibold chat-option-button shadow-sm';
+                backToMenuButton.className = 'w-full text-left p-3 bg-white border border-gray-300 rounded-lg text-[#1D23AF] font-semibold chat-option-button shadow-sm';
                 backToMenuButton.onclick = () => {
                     contactInfo = {};
+                    messagesContainer.innerHTML = ''; 
                     renderNode('root');
                 }
                 optionsContainer.appendChild(backToMenuButton);
-            }, 3000);
+            }, 1500);
         }
 
-        function handleOptionClick(option, isQuestion) {
-            if (isQuestion) {
+        function handleOptionClick(option, node) {
+            if (node.isQuestion) {
                 const userMessageDiv = document.createElement('div');
                 userMessageDiv.className = 'flex items-start gap-3 justify-end';
-                userMessageDiv.innerHTML = `<div class="bg-blue-600 text-white p-3 rounded-lg rounded-br-none max-w-xs md:max-w-md shadow"><p class="text-sm">${option.text.replace('‹ ', '')}</p></div>`;
+                userMessageDiv.innerHTML = `<div class="bg-[#1D23AF] text-white p-3 rounded-lg rounded-br-none max-w-xs md:max-w-md shadow"><p class="text-sm">${option.text.replace(/<[^>]*>/g, '')}</p></div>`;
                 messagesContainer.appendChild(userMessageDiv);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
             
-            // --- LÓGICA PARA GUARDAR EL ÁREA ACTUAL ---
-            if (option.area) {
-                currentAreaKey = option.area;
+            const isFinalAnswer = option.nextNode.startsWith('resp_');
+            const isAdvisorContact = option.nextNode === 'contact_askName';
+
+            if (isFinalAnswer) {
+                logInteraction({
+                    isAdvisorContact: false,
+                    grupo: node.grupo,
+                    category: node.category,
+                    questionText: option.text,
+                });
             }
             
-            if (option.nextNode === 'contact_askName') {
-                contactInfo = {};
+            if (isAdvisorContact) {
+                contactInfo = {
+                    sourceGrupo: node.grupo,
+                    sourceCategory: node.category
+                };
             }
 
             optionsContainer.innerHTML = '<p class="text-center text-gray-500 text-sm animate-pulse">Escribiendo...</p>';
@@ -436,3 +305,4 @@
 
 </body>
 </html>
+
