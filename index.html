@@ -270,7 +270,7 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             optionsContainer.innerHTML = '';
 
-            const finalMessage = `Hola, mi nombre es ${contactInfo.name} del área/estación ${contactInfo.area}.\n Tengo la siguiente consulta:\n${contactInfo.question}`;
+            const finalMessage = `Hola, mi nombre es ${contactInfo.name} del área/estación ${contactInfo.area}.\nTengo la siguiente consulta:\n${contactInfo.question}`;
             const text = encodeURIComponent(finalMessage);
             window.open(`https://wa.me/${asesorPhoneNumber}?text=${text}`, '_blank');
             
