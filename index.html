@@ -44,16 +44,30 @@
         const asesorPhoneNumber = '593967527939';
         const LOGGING_URL = 'https://script.google.com/macros/s/AKfycbwmNyeXG1Ienq24WweeE-Umx8n72vA3MCCXsdpHh02IjWbTqWEbYts5LePXUaj5k29E2Q/exec';
 
-        // --- Estructura de datos del Chatbot (CON GRUPO Y CATEGORÍA) ---
+        // --- Estructura de datos del Chatbot (CON GRUPOS NUEVOS) ---
         const chatTree = {
-            'root': { message: '¡Hola! Soy tu asistente virtual de Talento Humano. ¿Sobre qué grupo necesitas ayuda?', options: [ { text: 'Selección', nextNode: 'grupo_seleccion' }, { text: 'Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Nómina', nextNode: 'grupo_nomina' }, ], isQuestion: true },
+            'root': { 
+                message: '¡Hola! Soy tu asistente virtual de Talento Humano. ¿Sobre qué grupo necesitas ayuda?', 
+                options: [ 
+                    { text: 'Selección', nextNode: 'grupo_seleccion' }, 
+                    { text: 'Trabajo Social', nextNode: 'grupo_trabajo_social' }, 
+                    { text: 'Nómina', nextNode: 'grupo_nomina' },
+                    { text: 'Comunicaciones', nextNode: 'grupo_comunicaciones' },
+                    { text: 'Reconocimientos', nextNode: 'grupo_reconocimientos' }
+                ], 
+                isQuestion: true 
+            },
+
+            // --- GRUPO: SELECCIÓN ---
             'grupo_seleccion': { message: 'Has elegido el grupo de <strong>Selección</strong>. ¿Sobre qué categoría necesitas información?', options: [ { text: 'Referir personas', nextNode: 'categoria_referir_personas' }, { text: 'Datos Personales', nextNode: 'categoria_datos_personales' }, { text: '‹ Regresar al menú principal', nextNode: 'root' } ], isQuestion: true, grupo: 'Selección' },
             'categoria_referir_personas': { message: 'Has elegido <strong>Referir personas</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo referir a alguien?', nextNode: 'resp_referir_0' }, { text: '¿Dónde pueden postular?', nextNode: 'resp_referir_1' }, { text: '‹ Regresar a Selección', nextNode: 'grupo_seleccion' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Selección', category: 'Referir personas' },
             'resp_referir_0': { message: 'Para referir a alguien, debes seguir el proceso establecido en el portal del empleado o comunicarte directamente con el área de Selección para obtener el formulario correspondiente.', options: [{ text: '‹ Regresar a Referir personas', nextNode: 'categoria_referir_personas' }], isQuestion: false },
-            'resp_referir_1': { message: 'Puedes encontrar todas nuestras vacantes abiertas y postular a través de nuestro portal de empleos oficial o en las plataformas de reclutamiento asociadas.', options: [{ text: '‹ Regresar a Referir personas', nextNode: 'categoria_referir_personas' }], isQuestion: false },
+            'resp_referir_1': { message: 'Puedes encontrar todas nuestras vacantes abiertas y postular a través de nuestro portal de empleos oficial https://portalempleos.atimasa.com.ec/', options: [{ text: '‹ Regresar a Referir personas', nextNode: 'categoria_referir_personas' }], isQuestion: false },
             'categoria_datos_personales': { message: 'Has elegido <strong>Datos Personales</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo validar horas de pasantía con experiencia laboral?', nextNode: 'resp_datos_0' }, { text: '¿Cómo puedo actualizar mi información personal?', nextNode: 'resp_datos_1' }, { text: '‹ Regresar a Selección', nextNode: 'grupo_seleccion' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Selección', category: 'Datos Personales' },
             'resp_datos_0': { message: 'Para validar horas de pasantía con tu experiencia laboral, necesitas presentar un certificado de tus pasantías junto con una solicitud formal al departamento de Talento Humano para su revisión y aprobación.', options: [{ text: '‹ Regresar a Datos Personales', nextNode: 'categoria_datos_personales' }], isQuestion: false },
             'resp_datos_1': { message: 'Puedes actualizar tu información personal (dirección, estado civil, etc.) directamente en el portal del empleado o solicitando el formulario de actualización de datos a Talento Humano.', options: [{ text: '‹ Regresar a Datos Personales', nextNode: 'categoria_datos_personales' }], isQuestion: false },
+            
+            // --- GRUPO: TRABAJO SOCIAL ---
             'grupo_trabajo_social': { message: 'Has elegido el grupo de <strong>Trabajo Social</strong>. ¿Sobre qué categoría necesitas información?', options: [ { text: 'Uniformes', nextNode: 'categoria_uniformes' }, { text: 'Denuncias', nextNode: 'categoria_denuncias' }, { text: 'Charlas', nextNode: 'categoria_charlas' }, { text: 'Permisos Médicos', nextNode: 'categoria_permisos_medicos' }, { text: 'Subsidios', nextNode: 'categoria_subsidios' }, { text: 'Licencias', nextNode: 'categoria_licencias' }, { text: 'Préstamos', nextNode: 'categoria_prestamos' }, { text: '‹ Regresar al menú principal', nextNode: 'root' } ], isQuestion: true, grupo: 'Trabajo Social' },
             'categoria_uniformes': { message: 'Has elegido <strong>Uniformes</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuántas dotaciones de uniforme se reciben al año?', nextNode: 'resp_uniformes_0' }, { text: '¿Cómo reporto un daño en mi uniforme?', nextNode: 'resp_uniformes_1' }, { text: '¿Qué hago si mi uniforme no es de mi talla?', nextNode: 'resp_uniformes_2' }, { text: '‹ Regresar a Trabajo Social', nextNode: 'grupo_trabajo_social' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Trabajo Social', category: 'Uniformes' },
             'resp_uniformes_0': { message: 'Se reciben dos dotaciones de uniforme al año.', options: [{ text: '‹ Regresar a Uniformes', nextNode: 'categoria_uniformes' }], isQuestion: false },
@@ -81,6 +95,8 @@
             'resp_prestamos_0': { message: 'Los préstamos se otorgan por razones de necesidad o emergencia en las siguientes áreas: Salud, mejoramiento de vivienda y educación.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'categoria_prestamos' }], isQuestion: false },
             'resp_prestamos_1': { message: 'Debes presentar soportes según el motivo: receta médica, proformas de materiales, fotos del mejoramiento, etc. Los documentos deben estar a nombre del trabajador y con fecha actualizada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'categoria_prestamos' }], isQuestion: false },
             'resp_prestamos_2': { message: 'Puedes solicitar un préstamo luego de cumplir un año de trabajo en la empresa, y se aprueba en casos de alguna emergencia o necesidad comprobada.', options: [{ text: '‹ Regresar a Préstamos', nextNode: 'categoria_prestamos' }], isQuestion: false },
+            
+            // --- GRUPO: NÓMINA ---
             'grupo_nomina': { message: 'Has elegido el grupo de <strong>Nómina</strong>. ¿Sobre qué categoría necesitas información?', options: [ { text: 'Horas Extras', nextNode: 'categoria_horas_extras' }, { text: 'Fechas y Comprobantes de Pago', nextNode: 'categoria_fechas_pago' }, { text: 'Beneficios de Ley', nextNode: 'categoria_beneficios_ley' }, { text: 'Aportes al IESS y Fondos de Reserva', nextNode: 'categoria_aportes_iess' }, { text: 'Impuesto a la Renta', nextNode: 'categoria_impuesto_renta' }, { text: 'Anticipos de Sueldo', nextNode: 'categoria_anticipos' }, { text: 'Liquidación y Finiquito (Salida del Colaborador)', nextNode: 'categoria_liquidacion' }, { text: 'Vacaciones', nextNode: 'categoria_vacaciones' }, { text: '‹ Regresar al menú principal', nextNode: 'root' } ], isQuestion: true, grupo: 'Nómina' },
             'categoria_horas_extras': { message: 'Has elegido <strong>Horas Extras</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo se define la jornada ordinaria de trabajo?', nextNode: 'resp_horas_0' }, { text: '¿Qué es la jornada nocturna?', nextNode: 'resp_horas_1' }, { text: '¿Qué son las horas suplementarias?', nextNode: 'resp_horas_2' }, { text: '¿Qué son las horas extraordinarias?', nextNode: 'resp_horas_3' }, { text: '¿Cómo se calcula el valor de mi hora de trabajo?', nextNode: 'resp_horas_4' }, { text: '¿Qué sucede si se aplican dos recargos a una misma jornada?', nextNode: 'resp_horas_5' }, { text: '‹ Regresar a Nómina', nextNode: 'grupo_nomina' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Nómina', category: 'Horas Extras' },
             'resp_horas_0': { message: 'La jornada máxima ordinaria de trabajo es de 8 horas diarias.', options: [{ text: '‹ Regresar a Horas Extras', nextNode: 'categoria_horas_extras' }], isQuestion: false },
@@ -121,6 +137,19 @@
             'resp_vacaciones_1': { message: 'En este caso, se procederá a descontar de su liquidación de haberes el valor correspondiente a los días que tomó en exceso.', options: [{ text: '‹ Regresar a Vacaciones', nextNode: 'categoria_vacaciones' }], isQuestion: false },
             'resp_vacaciones_2': { message: 'Por ninguna razón la compañía compensará en dinero las vacaciones de los colaboradores, excepto lo estipulado en el Código del Trabajo.', options: [{ text: '‹ Regresar a Vacaciones', nextNode: 'categoria_vacaciones' }], isQuestion: false },
 
+            // --- GRUPO: COMUNICACIONES ---
+            'grupo_comunicaciones': { message: 'Has elegido el grupo de <strong>Comunicaciones</strong>. ¿Sobre qué categoría necesitas información?', options: [ { text: 'Boletín', nextNode: 'categoria_boletin' }, { text: '‹ Regresar al menú principal', nextNode: 'root' } ], isQuestion: true, grupo: 'Comunicaciones' },
+            'categoria_boletin': { message: 'Has elegido <strong>Boletín</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo descargar un boletín?', nextNode: 'resp_boletin_0' }, { text: '¿Por qué no me llegan el boletín o las comunicaciones?', nextNode: 'resp_boletin_1' }, { text: '‹ Regresar a Comunicaciones', nextNode: 'grupo_comunicaciones' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Comunicaciones', category: 'Boletín' },
+            'resp_boletin_0': { message: 'Lo podrás descargar accediendo al siguiente link', options: [{ text: '‹ Regresar a Boletín', nextNode: 'categoria_boletin' }], isQuestion: false },
+            'resp_boletin_1': { message: 'El boletín y las comunicaciones se envían a los números de teléfono que tenemos registrados en nuestra base de datos. Si no te llegan, actualiza tu número con tu administrador.', options: [{ text: '‹ Regresar a Boletín', nextNode: 'categoria_boletin' }], isQuestion: false },
+
+            // --- GRUPO: RECONOCIMIENTOS ---
+            'grupo_reconocimientos': { message: 'Has elegido el grupo de <strong>Reconocimientos</strong>. ¿Sobre qué categoría necesitas información?', options: [ { text: 'Dar a conocer un caso', nextNode: 'categoria_dar_caso' }, { text: 'Conocer el estatus de un caso', nextNode: 'categoria_conocer_estatus' }, { text: '‹ Regresar al menú principal', nextNode: 'root' } ], isQuestion: true, grupo: 'Reconocimientos' },
+            'categoria_dar_caso': { message: 'Has elegido <strong>Dar a conocer un caso</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cómo puedo dar a conocer un caso de Reconocimiento a nuestros Valores en estaciones o tiendas?', nextNode: 'resp_reconocimiento_0' }, { text: '‹ Regresar a Reconocimientos', nextNode: 'grupo_reconocimientos' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Reconocimientos', category: 'Dar a conocer un caso' },
+            'resp_reconocimiento_0': { message: 'Por favor registra tu caso en el siguiente formulario. (se le envía link de formulario)', options: [{ text: '‹ Regresar a Dar a conocer un caso', nextNode: 'categoria_dar_caso' }], isQuestion: false },
+            'categoria_conocer_estatus': { message: 'Has elegido <strong>Conocer el estatus de un caso</strong>. ¿Cuál es tu consulta?', options: [ { text: '¿Cuál es el estado de mi reporte de Reconocimiento a nuestros valores?', nextNode: 'resp_reconocimiento_1' }, { text: '‹ Regresar a Reconocimientos', nextNode: 'grupo_reconocimientos' }, { text: 'Contactar a un asesor', nextNode: 'contact_askName' } ], isQuestion: true, grupo: 'Reconocimientos', category: 'Conocer el estatus de un caso' },
+            'resp_reconocimiento_1': { message: 'Favor ingrese su número de cédula para revisar su caso.', options: [{ text: '‹ Regresar a Conocer el estatus', nextNode: 'categoria_conocer_estatus' }], isQuestion: false },
+
             'contact_askName': { message: 'Entendido. Para comunicarte con un asesor, por favor, escribe tu <strong>nombre completo</strong>.', isInputNode: true, inputKey: 'name', nextNode: 'contact_askArea' },
             'contact_askArea': { message: 'Gracias. Ahora, por favor, indica tu <strong>área o estación</strong>.', isInputNode: true, inputKey: 'area', nextNode: 'contact_askQuestion' },
             'contact_askQuestion': { message: 'Perfecto. Finalmente, escribe tu consulta de forma breve.', isInputNode: true, inputKey: 'question', maxLength: 120, nextNode: 'contact_compose' },
@@ -133,20 +162,25 @@
         let contactInfo = {};
 
         function logInteraction(logData) {
-            console.log("Intentando registrar:", logData);
+            console.log("Intentando registrar (modo no-cors):", logData);
             if (!LOGGING_URL || LOGGING_URL.includes('AQUI')) {
                 console.warn("URL de logging no configurada.");
                 return;
             }
-            fetch(LOGGING_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(logData),
-                mode: 'cors'
-            })
-            .then(response => response.json())
-            .then(data => console.log("Respuesta del script de logging:", data))
-            .catch(error => console.error("Error al registrar la interacción:", error));
+            try {
+                // Usamos fetch con modo 'no-cors' para "disparar y olvidar"
+                // Esto envía los datos pero no espera ni procesa la respuesta, evitando el error de CORS en la consola.
+                fetch(LOGGING_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(logData),
+                    mode: 'no-cors', 
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    }
+                });
+            } catch (error) {
+                console.error("Error al construir la solicitud de logging:", error);
+            }
         }
 
         function renderNode(nodeKey) {
@@ -305,4 +339,3 @@
 
 </body>
 </html>
-
